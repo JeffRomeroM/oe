@@ -8,6 +8,10 @@
 </template>
 
 <style scoped>
+*{
+  margin: 0;
+  padding: 0;
+}
 .input {
   display: block;
   margin: 0.5rem 0;

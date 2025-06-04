@@ -1,5 +1,7 @@
 <template>
+  <Header />
   <div class="container">
+    
     <h2>Subir Foto</h2>
 
     <input type="file" accept="image/*" @change="handleFile" />
@@ -30,6 +32,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
+import Header from '../components/Header.vue'
 
 const file = ref(null)
 const fotos = ref([])
