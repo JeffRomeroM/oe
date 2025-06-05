@@ -41,8 +41,7 @@ const logout = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(to right, #2563eb, #1e40af);
-  color: white;
+  border-bottom: 1px solid #e5e7eb;
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
