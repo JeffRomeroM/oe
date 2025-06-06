@@ -2,13 +2,15 @@
   <Header />
   <div class="crud-container">
     <h2>Ingresos</h2>
-
+    <div class="total-ingresos">
+      Total ingresos: <strong> C$ {{ totalIngresos }}</strong>
+    </div>
     <div class="filtros">
       <select v-model="filtroCultivo" @change="filtrarIngresos">
         <option value="">Todos los cultivos</option>
         <option v-for="c in cultivosUnicos" :key="c" :value="c">{{ c }}</option>
       </select>
-      <button @click="abrirModal()">Agregar ingreso</button>
+      <button @click="abrirModal()">Agregar Ingreso</button>
     </div>
 
     <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
@@ -37,7 +39,8 @@
 
     <ul class="lista-ingresos">
       <li v-for="item in ingresosFiltrados" :key="item.id" class="item-ingreso">
-        <span>{{ item.cultivo }} - {{ item.ingresos }} - {{ item.concepto }} - {{ item.fecha }}</span>
+        
+        <span><strong>Cultivo: </strong>{{ item.cultivo }}  - <strong>Monto: C$ </strong>{{ item.ingresos }} - <strong>Concepto: </strong>{{ item.concepto }} - <strong> Fecha: </strong>  {{ item.fecha }}</span>
         <div>
           <button @click="editar(item)" class="btn-editar">Editar</button>
           <button @click="eliminar(item.id)" class="btn-eliminar">Eliminar</button>
@@ -45,9 +48,7 @@
       </li>
     </ul>
 
-    <div class="total-ingresos">
-      Total ingresos: {{ totalIngresos }}
-    </div>
+    
   </div>
 </template>
 
@@ -167,7 +168,9 @@ onMounted(async () => {
   background: #fafafa;
   height: auto;
 }
-
+.total-ingresos strong{
+    color: #17a31c;
+}
 .filtros {
   display: flex;
   flex-wrap: wrap;
@@ -253,6 +256,7 @@ onMounted(async () => {
   font-weight: bold;
   font-size: 18px;
   text-align: right;
+  margin-bottom: 20px;
 }
 
 .modal-overlay {

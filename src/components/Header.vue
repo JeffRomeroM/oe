@@ -45,6 +45,12 @@ const logout = async () => {
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+
+  background-color: white;
+  backdrop-filter: blur(10px);
+  z-index: 100;
 }
 
 .app-name {
