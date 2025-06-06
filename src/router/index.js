@@ -3,6 +3,7 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Dashboard from '../views/Dashboard.vue'
 import { supabase } from '../supabase'
+import Ingresos from '../views/Ingresos.vue'
 
 const routes = [
   { path: '/', component: Login },
@@ -10,6 +11,11 @@ const routes = [
   {
     path: '/dashboard',
     component: Dashboard,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/ingresos',
+    component: Ingresos,
     meta: { requiresAuth: true }
   }
 ]

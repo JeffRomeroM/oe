@@ -1,5 +1,6 @@
 <template>
   <Header />
+  <Ingresos />
   <div class="container">
     
     <h2>Subir Foto</h2>
@@ -33,6 +34,7 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import Header from '../components/Header.vue'
+import Ingresos from './Ingresos.vue'
 
 const file = ref(null)
 const fotos = ref([])

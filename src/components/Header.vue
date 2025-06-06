@@ -1,9 +1,9 @@
 <template>
   <header class="header">
-    <h1 class="app-name">MiApp</h1>
+    <h1 class="app-name">Agro</h1>
     <div class="user-info" v-if="fullName">
       <span class="user-name">{{ fullName }}</span>
-      <button @click="logout" class="logout-btn">Cerrar sesión</button>
+      <button @click="logout" class="logout-btn">Salir</button>
     </div>
   </header>
 </template>

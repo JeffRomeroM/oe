@@ -53,7 +53,7 @@ const login = async () => {
   }
 
   if (data.user) {
-    router.push('/dashboard')
+    router.push('/ingresos')
   }
 
   loading.value = false
