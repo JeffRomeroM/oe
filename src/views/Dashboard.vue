@@ -1,212 +1,74 @@
 <template>
   <Header />
-  <Ingresos />
-  <div class="container">
-    
-    <h2>Subir Foto</h2>
+  <div>
+    <nav class="submenu">
+      <button :class="{ activo: vista === 'resumen' }" @click="vista = 'resumen'">Resumen</button>
+      <button :class="{ activo: vista === 'ingresos' }" @click="vista = 'ingresos'">Ingresos</button>
+      <button :class="{ activo: vista === 'egresos' }" @click="vista = 'egresos'">Egresos</button>
+    </nav>
 
-    <input type="file" accept="image/*" @change="handleFile" />
-
-    <button @click="uploadImage" :disabled="!file || loading">
-      {{ loading ? 'Subiendo...' : 'Subir Foto' }}
-    </button>
-
-    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-
-    <div class="gallery" v-if="fotos.length">
-      <div v-for="foto in fotos" :key="foto.id" class="card">
-        <img :src="foto.url" alt="foto subida" />
-        <p class="email">Subido por: {{ foto.email }}</p>
-        <button
-          v-if="foto.user_id === currentUserId"
-          @click="eliminarFoto(foto)"
-          class="delete-btn"
-        >
-          Eliminar
-        </button>
-      </div>
+    <div class="contenido">
+      <Resumen v-if="vista === 'resumen'" />
+      <Ingresos v-else-if="vista === 'ingresos'" />
+      <Egresos v-else-if="vista === 'egresos'" />
     </div>
-    <div v-else class="empty">No hay fotos aún.</div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { supabase } from '../supabase'
+import { ref } from 'vue'
+import Resumen from '../components/Resumen.vue'
+import Ingresos from '../components/Ingresos.vue'
+import Egresos from '../components/Egresos.vue'
 import Header from '../components/Header.vue'
-import Ingresos from './Ingresos.vue'
 
-const file = ref(null)
-const fotos = ref([])
-const errorMessage = ref('')
-const loading = ref(false)
-const currentUserId = ref(null)
-
-const handleFile = (e) => {
-  file.value = e.target.files[0]
-}
-
-const uploadImage = async () => {
-  errorMessage.value = ''
-  loading.value = true
-
-  const { data: userData, error: userError } = await supabase.auth.getUser()
-  const user = userData?.user
-  if (!user || userError) {
-    errorMessage.value = 'Usuario no autenticado'
-    loading.value = false
-    return
-  }
-  currentUserId.value = user.id
-
-  const fileName = `${user.id}/${Date.now()}_${file.value.name}`
-
-  const { error: uploadError } = await supabase.storage
-    .from('fotos')
-    .upload(fileName, file.value)
-
-  if (uploadError) {
-    errorMessage.value = uploadError.message
-    loading.value = false
-    return
-  }
-
-  const { data: publicUrlData } = supabase.storage
-    .from('fotos')
-    .getPublicUrl(fileName)
-
-  const { error: dbError } = await supabase.from('fotos').insert({
-    user_id: user.id,
-    url: publicUrlData.publicUrl,
-    path: fileName,
-  })
-
-  if (dbError) {
-    errorMessage.value = dbError.message
-  } else {
-    await fetchFotos()
-    file.value = null
-  }
-
-  loading.value = false
-}
-
-const fetchFotos = async () => {
-  const { data: userData } = await supabase.auth.getUser()
-  currentUserId.value = userData.user?.id || null
-
-  const { data, error } = await supabase
-    .from('fotos')
-    .select('id, url, path, user_id, created_at, profiles: user_id (email)')
-    .order('created_at', { ascending: false })
-
-  if (!error) {
-    fotos.value = data.map(f => ({
-      ...f,
-      email: f.profiles?.email || 'Anónimo'
-    }))
-  }
-}
-
-const eliminarFoto = async (foto) => {
-  const { error: storageError } = await supabase.storage
-    .from('fotos')
-    .remove([foto.path])
-
-  const { error: dbError } = await supabase
-    .from('fotos')
-    .delete()
-    .eq('id', foto.id)
-
-  if (storageError || dbError) {
-    errorMessage.value = storageError?.message || dbError?.message
-  } else {
-    await fetchFotos()
-  }
-}
-
-onMounted(fetchFotos)
+const vista = ref('resumen')
 </script>
 
 <style scoped>
-.container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
-  text-align: center;
-  background-color: #f9fafb;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+.submenu {
+  display: flex;
+  justify-content: space-around;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 10px;
+  flex-wrap: wrap;
 }
 
-input[type="file"] {
-  margin: 1rem 0;
-}
-
-button {
-  background-color: #2563eb;
-  color: white;
-  padding: 0.6rem 1rem;
+.submenu button {
+  background: none;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-button:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
-}
-
-.error {
-  color: #dc2626;
+  padding: 10px 16px;
+  font-size: 16px;
   font-weight: 600;
-  margin-top: 1rem;
-}
-
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.card {
-  background: white;
-  padding: 0.5rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  position: relative;
-}
-
-.card img {
-  width: 100%;
-  border-radius: 4px;
-}
-
-.email {
-  font-size: 0.85rem;
-  color: #4b5563;
-  margin-top: 0.3rem;
-}
-
-.delete-btn {
-  background-color: #ef4444;
-  color: white;
-  font-size: 0.85rem;
-  border: none;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  margin-top: 0.5rem;
+  color: #444;
   cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
 }
 
-.delete-btn:hover {
-  background-color: #b91c1c;
+.submenu button.activo {
+  border-bottom: 2px solid #007bff;
+  color: #007bff;
 }
 
-.empty {
-  margin-top: 2rem;
-  color: #6b7280;
+.submenu button:hover {
+  color: #007bff;
+}
+
+.contenido {
+  padding: 20px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  
+
+  .submenu button {
+    text-align: center;
+    padding: 12px;
+    font-size: 18px;
+  }
 }
 </style>
