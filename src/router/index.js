@@ -3,7 +3,8 @@ import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Dashboard from '../views/Dashboard.vue'
 import { supabase } from '../supabase'
-import Ingresos from '../views/Ingresos.vue'
+import Agricultura from '../views/Agricultura.vue'
+import Ganaderia from '../views/Ganaderia.vue'
 
 const routes = [
   { path: '/', component: Login },
@@ -14,8 +15,13 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/ingresos',
-    component: Ingresos,
+    path: '/agricultura',
+    component: Agricultura,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/ganaderia',
+    component: Ganaderia,
     meta: { requiresAuth: true }
   }
 ]

@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <h1 class="app-name">Agro</h1>
+    <h1 class="app-name" @click="irARuta('dashboard')">Agro</h1>
     <div class="user-info" v-if="fullName" @click="mostrarModal = true">
       <img src="/public/iconoagro.png" alt="icono" class="icono" />
       <span class="user-name">{{ fullName }}</span>
@@ -95,6 +95,7 @@ const logout = async () => {
   font-size: .8rem;
   font-weight: 800;
   color: #4caf50;
+  cursor: pointer;
 }
 
 /* Modal */

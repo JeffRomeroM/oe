@@ -1,74 +1,76 @@
 <template>
   <Header />
-  <div>
-    <nav class="submenu">
-      <button :class="{ activo: vista === 'resumen' }" @click="vista = 'resumen'">Resumen</button>
-      <button :class="{ activo: vista === 'ingresos' }" @click="vista = 'ingresos'">Ingresos</button>
-      <button :class="{ activo: vista === 'egresos' }" @click="vista = 'egresos'">Egresos</button>
-    </nav>
-
-    <div class="contenido">
-      <Resumen v-if="vista === 'resumen'" />
-      <Ingresos v-else-if="vista === 'ingresos'" />
-      <Egresos v-else-if="vista === 'egresos'" />
+  <div class="opciones-container">
+    
+  <img src="/public/agro.png" alt="">
+    <h2>Selecciona una opción</h2>
+    <div class="botones">
+      <button @click="irARuta('agricultura')">Agricultura</button>
+      <button @click="irARuta('ganaderia')">Ganadería</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import Resumen from '../components/Resumen.vue'
-import Ingresos from '../components/Ingresos.vue'
-import Egresos from '../components/Egresos.vue'
+import { useRouter } from 'vue-router'
 import Header from '../components/Header.vue'
+const router = useRouter()
 
-const vista = ref('resumen')
+const irARuta = (ruta) => {
+  router.push(`/${ruta}`)
+}
 </script>
 
 <style scoped>
-.submenu {
+.opciones-container {
   display: flex;
-  justify-content: space-around;
-  background-color: #ffffff;
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  padding: 10px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  text-align: center;
+}
+.opciones-container img{
+  width: 20%;
+}
+h2 {
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.5rem;
 }
 
-.submenu button {
-  background: none;
+.botones {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+button {
+  background-color: #4caf50;
+  color: white;
+  padding: 0.8rem;
+  font-size: 1rem;
   border: none;
-  padding: 10px 16px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #444;
+  border-radius: 8px;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.3s ease;
+  transition: background 0.2s ease-in-out;
+  width: 100%;
 }
 
-.submenu button.activo {
-  border-bottom: 2px solid #4caf50;
-  color: #4caf50;
+button:hover {
+  background-color: #43a047;
 }
 
-.submenu button:hover {
-  color: #4caf50;
-}
+@media (min-width: 640px) {
+  .botones {
+    flex-direction: row;
+    justify-content: center;
+  }
 
-.contenido {
-  padding: 20px;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  
-
-  .submenu button {
-    text-align: center;
-    padding: 12px;
-    font-size: 18px;
+  button {
+    width: 140px;
   }
 }
 </style>
