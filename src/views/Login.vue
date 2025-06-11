@@ -1,5 +1,6 @@
 <template>
   <div class="login-container">
+  <img src="/public/agro.png" alt="">
     <h2>Iniciar Sesión</h2>
     <form @submit.prevent="login" class="form">
       <label>
@@ -73,7 +74,11 @@ const goToRegister = () => {
   border-radius: 8px;
   background: #fff;
 }
-
+.login-container img {
+  display: block;
+  margin: 0 auto 1rem;
+  width: 100px; /* Ajusta el tamaño según sea necesario */
+}
 h2 {
   text-align: center;
   margin-bottom: 1rem;
@@ -100,7 +105,7 @@ button {
   width: 100%;
   padding: 0.6rem 0;
   font-size: 1.1rem;
-  background-color: #2563eb;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 6px;
@@ -110,7 +115,7 @@ button {
 }
 
 button:disabled {
-  background-color: #93c5fd;
+  background-color: #73e077;
   cursor: not-allowed;
 }
 

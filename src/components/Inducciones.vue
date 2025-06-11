@@ -138,7 +138,7 @@ onMounted(async () => {
   margin-bottom: 1rem;
 }
 .btn-agregar {
-  background-color: #10b981;
+  background-color: #4caf50;
   color: white;
   padding: 0.6rem 1.2rem;
   border-radius: 6px;

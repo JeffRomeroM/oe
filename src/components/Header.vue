@@ -2,7 +2,7 @@
   <header class="header">
     <h1 class="app-name">Agro</h1>
     <div class="user-info" v-if="fullName" @click="mostrarModal = true">
-      <img src="iconoagro.png" alt="icono" class="icono" />
+      <img src="/public/iconoagro.png" alt="icono" class="icono" />
       <span class="user-name">{{ fullName }}</span>
     </div>
 

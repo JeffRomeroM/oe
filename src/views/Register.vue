@@ -1,5 +1,6 @@
 <template>
   <div class="register-container">
+    <img src="/public/agro.png" alt="">
     <h2>Registrarse</h2>
     <form @submit.prevent="registrar" class="form">
       <label>
@@ -101,6 +102,11 @@ const registrar = async () => {
   border-radius: 8px;
   background: #fff;
 }
+.register-container img {
+  width: 100px;
+  display: block;
+  margin: 0 auto 1rem;
+}
 
 h2 {
   text-align: center;
@@ -128,7 +134,7 @@ button {
   width: 100%;
   padding: 0.6rem 0;
   font-size: 1.1rem;
-  background-color: #2563eb;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 6px;
@@ -138,12 +144,12 @@ button {
 }
 
 button:disabled {
-  background-color: #3779c5;
+  background-color: #4caf50;
   cursor: not-allowed;
 }
 
 button:hover:not(:disabled) {
-  background-color: #1e40af;
+  background-color: #4caf50;
 }
 
 .error {
