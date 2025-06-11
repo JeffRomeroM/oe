@@ -42,7 +42,7 @@
       <div class="modal">
         <p>¿Confirmas eliminar este ingreso?</p>
         <div class="botones-modal">
-          <button @click="confirmarEliminar">Sí, eliminar</button>
+          <button @click="confirmarEliminar">Eliminar</button>
           <button @click="cerrarModalEliminar">Cancelar</button>
         </div>
       </div>

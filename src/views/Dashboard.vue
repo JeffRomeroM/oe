@@ -49,12 +49,12 @@ const vista = ref('resumen')
 }
 
 .submenu button.activo {
-  border-bottom: 2px solid #007bff;
-  color: #007bff;
+  border-bottom: 2px solid #4caf50;
+  color: #4caf50;
 }
 
 .submenu button:hover {
-  color: #007bff;
+  color: #4caf50;
 }
 
 .contenido {

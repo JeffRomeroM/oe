@@ -13,11 +13,13 @@
       <p>Balance: <strong :class="{ positivo: balance >= 0, negativo: balance < 0 }">C$ {{ balance }}</strong></p>
     </div>
   </div>
+  <Inducciones />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { supabase } from '../supabase'
+import Inducciones from './Inducciones.vue'
 
 const ingresos = ref([])
 const egresos = ref([])
