@@ -4,7 +4,6 @@
 
     <div class="filtros">
       <input type="date" v-model="filtroDesde" />
-      <input type="date" v-model="filtroHasta" />
       <button @click="cargarFacturas">Filtrar</button>
       <button @click="abrirModal()">Nueva Factura</button>
     </div>

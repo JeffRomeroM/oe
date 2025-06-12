@@ -15,7 +15,7 @@
 
     <nav class="submenu">
       <button :class="{ activo: vista === 'inducciones' }" @click="vista = 'inducciones'">Inducciones</button>
-      <button :class="{ activo: vista === 'factura' }" @click="vista = 'factura'">Factura</button>
+      <button :class="{ activo: vista === 'factura' }" @click="vista = 'factura'">Facturas</button>
     </nav>
     <div class="contenido">
       <Inducciones v-if="vista === 'inducciones'" />
