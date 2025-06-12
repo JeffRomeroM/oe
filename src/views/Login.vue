@@ -68,7 +68,7 @@ const goToRegister = () => {
 <style scoped>
 .login-container {
   max-width: 400px;
-  margin: 2rem auto;
+  margin: 6rem 10px;
   padding: 1rem 1.5rem;
   border: 1px solid #ddd;
   border-radius: 8px;
