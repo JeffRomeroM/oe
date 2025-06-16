@@ -9,11 +9,13 @@
       <button @click="irARuta('ganaderia')">Ganadería</button>
     </div>
   </div>
+  <Usuarios />
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
 import Header from '../components/Header.vue'
+import Usuarios from '../components/Usuarios.vue'
 const router = useRouter()
 
 const irARuta = (ruta) => {
@@ -27,7 +29,6 @@ const irARuta = (ruta) => {
   flex-direction: column;
   align-items: center;
   padding: 2rem 1rem;
-  min-height: 100vh;
   text-align: center;
 }
 .opciones-container img{

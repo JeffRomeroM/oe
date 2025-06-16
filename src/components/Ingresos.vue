@@ -7,7 +7,7 @@
     <div class="filtros">
       <select v-model="filtroCultivo" @change="filtrarIngresos">
         <option value="">Todos los cultivos</option>
-        <option v-for="c in cultivosUnicos" :key="c" :value="c">{{ c }}</option>
+        <option v-for="c in cultivos" :key="c" :value="c">{{ c }}</option>
       </select>
       <button @click="abrirModal()">Agregar Ingreso</button>
     </div>
@@ -15,16 +15,14 @@
     <!-- Modal Agregar/Editar -->
     <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
       <div class="modal">
+        <h2>Agregar Ingreso</h2>
         <form @submit.prevent="guardarIngreso" class="formulario">
-          <input
-            v-model="form.cultivo"
-            list="cultivos-list"
-            placeholder="Nombre del cultivo"
-            required
-          />
-          <datalist id="cultivos-list">
-            <option v-for="c in cultivosUnicos" :key="c" :value="c" />
-          </datalist>
+          
+          <select v-model="form.cultivo" required>
+            <option value="" disabled>Seleccione un cultivo</option>
+            <option v-for="c in cultivos" :key="c" :value="c">{{ c }}</option>
+          </select>
+
 
           <input v-model.number="form.ingresos" placeholder="Ingresos" type="number" min="0" required />
           <input v-model="form.concepto" placeholder="Concepto" required />
@@ -67,10 +65,13 @@ import { supabase } from '../supabase'
 const ingresos = ref([])
 const ingresosFiltrados = ref([])
 const filtroCultivo = ref('')
+const cultivos = ref([])
+
 const form = ref({ cultivo: '', ingresos: 0, concepto: '', fecha: '' })
 const editando = ref(false)
 const modalVisible = ref(false)
 const modalEliminarVisible = ref(false)
+
 let idActual = null
 let idEliminar = null
 let userId = null
@@ -90,6 +91,17 @@ const cargarIngresos = async () => {
   if (!error) {
     ingresos.value = data
     filtrarIngresos()
+  }
+}
+
+const cargarCultivos = async () => {
+  if (!userId) return
+  const { data, error } = await supabase
+    .from('cultivos')
+    .select('nombre')
+    .eq('user_id', userId)
+  if (!error && data) {
+    cultivos.value = data.map(c => c.nombre)
   }
 }
 
@@ -150,11 +162,6 @@ const totalIngresos = computed(() =>
   ingresosFiltrados.value.reduce((acc, curr) => acc + Number(curr.ingresos), 0)
 )
 
-const cultivosUnicos = computed(() => {
-  const nombres = ingresos.value.map(i => i.cultivo)
-  return [...new Set(nombres)]
-})
-
 // Modal eliminar
 const abrirModalEliminar = (id) => {
   idEliminar = id
@@ -178,11 +185,12 @@ const confirmarEliminar = async () => {
 
 onMounted(async () => {
   await obtenerUsuario()
+  await cargarCultivos()
   await cargarIngresos()
 })
 </script>
 
-<style scoped>
+<style >
 .crud-container {
   max-width: 96%;
   margin: 30px auto;
@@ -262,11 +270,11 @@ onMounted(async () => {
 }
 
 .btn-editar {
-  background-color: #2196f3;
+  background-color: #4caf50;
 }
 
 .btn-editar:hover {
-  background-color: #1976d2;
+  background-color: #45a049;
 }
 
 .btn-eliminar {
@@ -284,6 +292,7 @@ onMounted(async () => {
   margin-bottom: 20px;
 }
 
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -298,13 +307,23 @@ onMounted(async () => {
 }
 
 .modal {
-  background: white;
-  padding: 20px;
+  background-color: white;
+  padding: 10px;
   border-radius: 8px;
   width: 90%;
+  margin: auto;
   max-width: 400px;
+  box-sizing: border-box;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
 }
 
+.modal h2{
+  width: 100%;
+  text-align: center;
+}
 .formulario {
   display: flex;
   flex-direction: column;
@@ -358,11 +377,11 @@ onMounted(async () => {
 }
 
 .botones-modal button:first-child {
-  background-color: #f44336;
+  background-color: #4caf50;
 }
 
 .botones-modal button:first-child:hover {
-  background-color: #d32f2f;
+  background-color: #66c469;
 }
 
 @media (max-width: 480px) {

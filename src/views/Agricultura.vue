@@ -1,6 +1,7 @@
 <template>
   <Header />
     <RouterLink class="regresar" to="dashboard"> Regresar </RouterLink>
+    <Cultivos />
   <div>
     <nav class="submenu">
       <button :class="{ activo: vista === 'resumen' }" @click="vista = 'resumen'">Resumen</button>
@@ -24,6 +25,7 @@ import Egresos from '../components/Egresos.vue'
 import Header from '../components/Header.vue'
 
 import { RouterLink } from 'vue-router'
+import Cultivos from '../components/Cultivos.vue'
 
 const vista = ref('resumen')
 </script>

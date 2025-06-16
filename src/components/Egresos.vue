@@ -1,24 +1,25 @@
 <template>
   <div class="crud-container">
-    <h2>Egresos</h2>
+    <h2>Ingresos</h2>
     <div class="total-ingresos">
-      Total egresos: <strong> C$ {{ totalEgresos }}</strong>
+      Total ingresos: <strong> C$ {{ totalIngresos }}</strong>
     </div>
     <div class="filtros">
-      <select v-model="filtroCultivo" @change="filtrarEgresos">
+      <select v-model="filtroCultivo" @change="filtrarIngresos">
         <option value="">Todos los cultivos</option>
         <option v-for="c in cultivosUnicos" :key="c" :value="c">{{ c }}</option>
       </select>
-      <button @click="abrirModal()">Agregar Egreso</button>
+      <button @click="abrirModal()">Agregar Ingreso</button>
     </div>
 
     <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
       <div class="modal">
-        <form @submit.prevent="guardarEgreso" class="formulario">
-          <input v-model="form.cultivo" list="cultivos-list" placeholder="Nombre del cultivo" required />
-          <datalist id="cultivos-list">
-            <option v-for="c in cultivosUnicos" :key="c" :value="c" />
-          </datalist>
+        <form @submit.prevent="guardarIngreso" class="formulario">
+          <select v-model="form.cultivo" required>
+            <option value="" disabled>Seleccione un cultivo</option>
+            <option v-for="c in cultivos" :key="c.nombre" :value="c.nombre">{{ c.nombre }}</option>
+
+          </select>
 
           <input v-model.number="form.monto" placeholder="Monto" type="number" min="0" required />
           <input v-model="form.concepto" placeholder="Concepto" required />
@@ -34,7 +35,7 @@
     <!-- Modal de Confirmación -->
     <div v-if="confirmacionVisible" class="modal-overlay" @click.self="cancelarEliminacion">
       <div class="modal confirmacion">
-        <p>¿Estás seguro que deseas eliminar este egreso?</p>
+        <p>¿Estás seguro que deseas eliminar este ingreso?</p>
         <div class="botones-modal">
           <button @click="eliminarConfirmado" class="btn-eliminar">Eliminar</button>
           <button @click="cancelarEliminacion" class="btn-cancelar">Cancelar</button>
@@ -43,7 +44,7 @@
     </div>
 
     <ul class="lista-ingresos">
-      <li v-for="item in egresosFiltrados" :key="item.id" class="item-ingreso">
+      <li v-for="item in ingresosFiltrados" :key="item.id" class="item-ingreso">
         <span><strong>Cultivo: </strong>{{ item.cultivo }} - <strong>Monto: C$ </strong>{{ item.monto }} - <strong>Concepto: </strong>{{ item.concepto }} - <strong>Fecha: </strong>{{ item.fecha }}</span>
         <div>
           <button @click="editar(item)" class="btn-editar">Editar</button>
@@ -58,13 +59,15 @@
 import { ref, onMounted, computed } from 'vue'
 import { supabase } from '../supabase'
 
-const egresos = ref([])
-const egresosFiltrados = ref([])
+const ingresos = ref([])
+const ingresosFiltrados = ref([])
 const filtroCultivo = ref('')
+const cultivos = ref([])
 const form = ref({ cultivo: '', monto: 0, concepto: '', fecha: '' })
 const editando = ref(false)
 const modalVisible = ref(false)
 const confirmacionVisible = ref(false)
+
 let idActual = null
 let idParaEliminar = null
 let userId = null
@@ -74,31 +77,42 @@ const obtenerUsuario = async () => {
   userId = data.user?.id || null
 }
 
-const cargarEgresos = async () => {
+const cargarCultivos = async () => {
   if (!userId) return
   const { data, error } = await supabase
-    .from('egresos')
+    .from('cultivos')
+    .select('nombre')
+    .eq('user_id', userId)
+  if (!error && data) {
+    cultivos.value = data
+
+  }
+}
+
+const cargarIngresos = async () => {
+  if (!userId) return
+  const { data, error } = await supabase
+    .from('ingresos')
     .select('*')
     .eq('user_id', userId)
     .order('fecha', { ascending: false })
   if (!error) {
-    egresos.value = data
-    filtrarEgresos()
+    ingresos.value = data
+    filtrarIngresos()
   }
 }
 
-
-const guardarEgreso = async () => {
+const guardarIngreso = async () => {
   if (!userId) return alert('Usuario no autenticado')
 
   if (editando.value) {
     await supabase
-      .from('egresos')
+      .from('ingresos')
       .update({ ...form.value, user_id: userId })
       .eq('id', idActual)
   } else {
     await supabase
-      .from('egresos')
+      .from('ingresos')
       .insert([{ ...form.value, user_id: userId }])
   }
 
@@ -106,7 +120,7 @@ const guardarEgreso = async () => {
   editando.value = false
   idActual = null
   cerrarModal()
-  cargarEgresos()
+  cargarIngresos()
 }
 
 const editar = (item) => {
@@ -128,10 +142,10 @@ const cancelarEliminacion = () => {
 
 const eliminarConfirmado = async () => {
   if (!idParaEliminar || !userId) return
-  await supabase.from('egresos').delete().eq('id', idParaEliminar).eq('user_id', userId)
+  await supabase.from('ingresos').delete().eq('id', idParaEliminar).eq('user_id', userId)
   confirmacionVisible.value = false
   idParaEliminar = null
-  cargarEgresos()
+  cargarIngresos()
 }
 
 const abrirModal = (editar = false) => {
@@ -147,26 +161,27 @@ const cerrarModal = () => {
   modalVisible.value = false
 }
 
-const filtrarEgresos = () => {
+const filtrarIngresos = () => {
   if (!filtroCultivo.value) {
-    egresosFiltrados.value = [...egresos.value]
+    ingresosFiltrados.value = [...ingresos.value]
   } else {
-    egresosFiltrados.value = egresos.value.filter(i => i.cultivo === filtroCultivo.value)
+    ingresosFiltrados.value = ingresos.value.filter(i => i.cultivo === filtroCultivo.value)
   }
 }
 
-const totalEgresos = computed(() =>
-  egresosFiltrados.value.reduce((acc, curr) => acc + Number(curr.monto), 0)
+const totalIngresos = computed(() =>
+  ingresosFiltrados.value.reduce((acc, curr) => acc + Number(curr.monto), 0)
 )
 
 const cultivosUnicos = computed(() => {
-  const nombres = egresos.value.map(i => i.cultivo)
+  const nombres = ingresos.value.map(i => i.cultivo)
   return [...new Set(nombres)]
 })
 
 onMounted(async () => {
   await obtenerUsuario()
-  await cargarEgresos()
+  await cargarCultivos()
+  await cargarIngresos()
 })
 </script>
 
