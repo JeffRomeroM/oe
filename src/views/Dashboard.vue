@@ -9,12 +9,14 @@
       <button @click="irARuta('ganaderia')">Ganadería</button>
     </div>
   </div>
+  <Chats />
   <Usuarios />
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
 import Header from '../components/Header.vue'
+import Chats from '../components/Chats.vue'
 import Usuarios from '../components/Usuarios.vue'
 const router = useRouter()
 

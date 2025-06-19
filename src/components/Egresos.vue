@@ -181,7 +181,7 @@ const cultivosUnicos = computed(() => {
 
 onMounted(async () => {
   await obtenerUsuario()
-  await cargarCultivos()
+  await cargarCultivos()//////////////////////////////////////////////////
   await cargarEgresos()
 })
 </script>
