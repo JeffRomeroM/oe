@@ -1,6 +1,10 @@
 <template>
   <header class="header">
     <h1 class="app-name" @click="irARuta('dashboard')">Agro</h1>
+    <div class="botones">
+      <button @click="irARuta('agricultura')">Agricultura</button>
+      <button @click="irARuta('ganaderia')">Ganadería</button>
+    </div>
     <div class="user-info" v-if="fullName" @click="mostrarModal = true">
       <img src="/public/iconoagro.png" alt="icono" class="icono" />
       <span class="user-name">{{ fullName }}</span>
@@ -24,6 +28,9 @@ import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import { useRouter } from 'vue-router'
 
+const irARuta = (ruta) => {
+  router.push(`/${ruta}`)
+}
 const fullName = ref(null)
 const mostrarModal = ref(false)
 const router = useRouter()
@@ -58,7 +65,9 @@ const logout = async () => {
   position: sticky;
   top: 0;
   background-color: white;
-  z-index: 100;
+  z-index: 100; 
+  width: 100%;
+  justify-content: space-between;
 }
 
 .app-name {
@@ -66,6 +75,18 @@ const logout = async () => {
   font-weight: bold;
   margin: 0;
   color: #4caf50;
+}
+
+
+
+button {
+  border: none;
+  margin-left: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: white;
+  color: #4caf50;
+ 
 }
 
 .user-info {
@@ -104,12 +125,11 @@ const logout = async () => {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 200;
+  z-index: 1000;
 }
 
 .modal {
@@ -118,7 +138,6 @@ const logout = async () => {
   border-radius: 12px;
   max-width: 300px;
   text-align: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .modal-buttons {

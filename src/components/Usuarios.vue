@@ -1,12 +1,19 @@
 <template>
-  <div class="usuarios-container">
-    <h2 class="titulo">👥 Compañeros que ya usan la app</h2>
-    <div class="lista-usuarios">
-      <div v-for="usuario in usuarios" :key="usuario.full_name" class="usuario-card">
-        <div class="avatar">
-          {{ obtenerIniciales(usuario.full_name) }}
+  <div>
+    <button @click="modalAbierto = true" class="btn-abrir">Ver usuarios</button>
+
+    <div v-if="modalAbierto" class="modal-overlay" @click.self="modalAbierto = false">
+      <div class="modal-contenido">
+        <h2 class="titulo">👥 Compañeros que ya usan la app</h2>
+        <div class="lista-usuarios">
+          <div v-for="usuario in usuarios" :key="usuario.full_name" class="usuario-card">
+            <div class="avatar">
+              {{ obtenerIniciales(usuario.full_name) }}
+            </div>
+            <div class="nombre">{{ usuario.full_name }}</div>
+          </div>
         </div>
-        <div class="nombre">{{ usuario.full_name }}</div>
+        <button @click="modalAbierto = false" class="btn-cerrar">Cerrar</button>
       </div>
     </div>
   </div>
@@ -17,6 +24,7 @@ import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 
 const usuarios = ref([])
+const modalAbierto = ref(false)
 
 const cargarUsuarios = async () => {
   const { data, error } = await supabase
@@ -38,13 +46,35 @@ onMounted(cargarUsuarios)
 </script>
 
 <style scoped>
-.usuarios-container {
-  padding: 2rem;
-  max-width: 600px;
-  margin: auto;
-  background: #f9f9f9;
+.btn-abrir {
+  background: #4caf50;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 45%;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+  width: 100%;
+}
+
+.modal-contenido {
+  background: white;
   border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  padding: 10px;
+  margin: auto;
+  margin-left: 3%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .titulo {
@@ -64,10 +94,10 @@ onMounted(cargarUsuarios)
 .usuario-card {
   display: flex;
   align-items: center;
-  background: white;
+  background: #f7f7f7;
   border-radius: 12px;
   padding: 0.75rem 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   transition: transform 0.2s;
 }
 
@@ -92,5 +122,17 @@ onMounted(cargarUsuarios)
 .nombre {
   font-size: 1rem;
   color: #333;
+}
+
+.btn-cerrar {
+  margin-top: 1.5rem;
+  background: #e53935;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
 }
 </style>

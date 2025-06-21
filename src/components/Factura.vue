@@ -6,42 +6,110 @@
       <input type="date" v-model="filtroDesde" />
       <button @click="cargarFacturas">Filtrar</button>
       <button @click="abrirModal()">Nueva Factura</button>
+      <PreciosPiña />
     </div>
 
     <div v-if="facturas.length === 0" class="sin-datos">No hay facturas.</div>
 
     <div class="lista-facturas">
-      <div v-for="factura in facturas" :key="factura.id" class="card-factura">
+      <div
+        v-for="factura in facturas"
+        :key="factura.id"
+        class="card-factura"
+      >
         <header>
           <h3>{{ factura.nombre }}</h3>
           <small>{{ factura.fecha }}</small>
         </header>
-        <div class="detalle-pinas">
-          <div><strong>Primera:</strong> {{ factura.primera }}* 38 <strong>(C$ {{ factura.primera * 38 }})</strong></div>
-          <div><strong>Segunda:</strong> {{ factura.segunda }}* 35 <strong>(C$ {{ factura.segunda * 35 }})</strong></div>
-          <div><strong>Tercera:</strong> {{ factura.tercera }}* 30 (C$ {{ factura.tercera * 30 }})</div>
-          <div><strong>Cuarta:</strong> {{ factura.cuarta }}* 25 (C$ {{ factura.cuarta * 25 }})</div>
-          <div><strong>Quinta:</strong> {{ factura.quinta }}* 19 (C$ {{ factura.quinta * 19 }})</div>
-          <div><strong>Sexta:</strong> {{ factura.sexta }}* 15 (C$ {{ factura.sexta * 15 }})</div>
-          <div><strong>Séptima:</strong> {{ factura.septima }}* 10 (C$ {{ factura.septima * 10 }})</div>
-          <div><strong>Octava:</strong> {{ factura.octava }}* 6 (C$ {{ factura.octava * 6 }})</div>
-          <div><strong>Novena:</strong> {{ factura.novena }}* 4 (C$ {{ factura.novena * 4 }})</div>
-        </div>
-        <div class="resumen"> 
+        <table class="tabla-factura">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Cant.</th>
+              <th>Precio</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="factura.primera">
+              <td>Primera</td>
+              <td>{{ factura.primera }}</td>
+              <td>C$ {{ precios.primera }}</td>
+              <td>C$ {{ factura.primera * precios.primera }}</td>
+            </tr>
+            <tr v-if="factura.segunda">
+              <td>Segunda</td>
+              <td>{{ factura.segunda }}</td>
+              <td>C$ {{ precios.segunda }}</td>
+              <td>C$ {{ factura.segunda * precios.segunda }}</td>
+            </tr>
+            <tr v-if="factura.tercera">
+              <td>Tercera</td>
+              <td>{{ factura.tercera }}</td>
+              <td>C$ {{ precios.tercera }}</td>
+              <td>C$ {{ factura.tercera * precios.tercera }}</td>
+            </tr>
+            <tr v-if="factura.cuarta">
+              <td>Cuarta</td>
+              <td>{{ factura.cuarta }}</td>
+              <td>C$ {{ precios.cuarta }}</td>
+              <td>C$ {{ factura.cuarta * precios.cuarta }}</td>
+            </tr>
+            <tr v-if="factura.quinta">
+              <td>Quinta</td>
+              <td>{{ factura.quinta }}</td>
+              <td>C$ {{ precios.quinta }}</td>
+              <td>C$ {{ factura.quinta * precios.quinta }}</td>
+            </tr>
+            <tr v-if="factura.sexta">
+              <td>Sexta</td>
+              <td>{{ factura.sexta }}</td>
+              <td>C$ {{ precios.sexta }}</td>
+              <td>C$ {{ factura.sexta * precios.sexta }}</td>
+            </tr>
+            <tr v-if="factura.septima">
+              <td>Séptima</td>
+              <td>{{ factura.septima }}</td>
+              <td>C$ {{ precios.septima }}</td>
+              <td>C$ {{ factura.septima * precios.septima }}</td>
+            </tr>
+            <tr v-if="factura.octava">
+              <td>Octava</td>
+              <td>{{ factura.octava }}</td>
+              <td>C$ {{ precios.octava }}</td>
+              <td>C$ {{ factura.octava * precios.octava }}</td>
+            </tr>
+            <tr v-if="factura.novena">
+              <td>Novena</td>
+              <td>{{ factura.novena }}</td>
+              <td>C$ {{ precios.novena }}</td>
+              <td>C$ {{ factura.novena * precios.novena }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="resumen">
           <div><strong>Total Piñas:</strong> {{ totalPinas(factura) }}</div>
           <div><strong>Total: C$</strong> {{ totalDinero(factura) }}</div>
           <div><strong>Promedio: C$</strong> {{ promedioValor(factura) }}</div>
         </div>
         <div class="acciones">
           <button @click="editar(factura)">Editar</button>
-          <button @click="confirmarEliminar(factura.id)" class="eliminar">Eliminar</button>
+          <button @click="confirmarEliminar(factura.id)" class="eliminar">
+            Eliminar
+          </button>
           <button @click="compartirWhatsApp(factura)">Compartir WhatsApp</button>
+          <button @click="imprimirFactura(factura)">Imprimir / PDF</button>
         </div>
       </div>
     </div>
 
     <!-- Modal Insertar/Editar -->
-    <div v-if="modalAbierto" class="modal-overlay" @click.self="cerrarModal">
+    <div
+      v-if="modalAbierto"
+      class="modal-overlay"
+      @click.self="cerrarModal"
+    >
       <div class="modal">
         <h3>{{ editando ? 'Editar Factura' : 'Nueva Factura' }}</h3>
         <form @submit.prevent="guardar">
@@ -87,7 +155,11 @@
     </div>
 
     <!-- Modal Confirmar eliminar -->
-    <div v-if="modalEliminar" class="modal-overlay" @click.self="cancelarEliminar">
+    <div
+      v-if="modalEliminar"
+      class="modal-overlay"
+      @click.self="cancelarEliminar"
+    >
       <div class="modal">
         <h3>Confirmar eliminación</h3>
         <p>¿Seguro que deseas eliminar esta factura?</p>
@@ -103,6 +175,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
+import PreciosPiña from './PreciosPiña.vue'
 
 const facturas = ref([])
 const filtroDesde = ref('')
@@ -142,9 +215,47 @@ const piñasKeys = {
 let editId = null
 let userId = null
 
+const precios = ref({
+  primera: 0,
+  segunda: 0,
+  tercera: 0,
+  cuarta: 0,
+  quinta: 0,
+  sexta: 0,
+  septima: 0,
+  octava: 0,
+  novena: 0,
+})
+
 const obtenerUsuario = async () => {
   const { data } = await supabase.auth.getUser()
   userId = data.user?.id
+}
+
+const cargarPrecios = async () => {
+  const { data, error } = await supabase
+    .from('preciosPiña')
+    .select('*')
+    .eq('user_id', userId)
+    .single()
+
+  if (!error && data) {
+    precios.value = {
+      primera: data.primera,
+      segunda: data.segunda,
+      tercera: data.tercera,
+      cuarta: data.cuarta,
+      quinta: data.quinta,
+      sexta: data.sexta,
+      septima: data.septima,
+      octava: data.octava,
+      novena: data.novena,
+    }
+  } else {
+    console.warn(
+      'No se encontraron precios personalizados, usa valores por defecto.'
+    )
+  }
 }
 
 const cargarFacturas = async () => {
@@ -170,15 +281,10 @@ const totalPinas = (f) =>
   Object.keys(piñasKeys).reduce((acc, key) => acc + (f[key] || 0), 0)
 
 const totalDinero = (f) =>
-  (f.primera || 0) * 38 +
-  (f.segunda || 0) * 35 +
-  (f.tercera || 0) * 30 +
-  (f.cuarta || 0) * 25 +
-  (f.quinta || 0) * 19 +
-  (f.sexta || 0) * 15 +
-  (f.septima || 0) * 10 +
-  (f.octava || 0) * 6 +
-  (f.novena || 0) * 4
+  Object.keys(piñasKeys).reduce(
+    (acc, key) => acc + (f[key] || 0) * (precios.value[key] || 0),
+    0
+  )
 
 const promedioValor = (f) => {
   const total = totalPinas(f)
@@ -206,12 +312,12 @@ const abrirModal = () => {
   editId = null
 }
 
+const cerrarModal = () => {
+  modalAbierto.value = false
+}
+
 const guardar = async () => {
-  if (
-    !nueva.value.fecha ||
-    !nueva.value.nombre ||
-    !nueva.value.celular
-  ) {
+  if (!nueva.value.fecha || !nueva.value.nombre || !nueva.value.celular) {
     alert('Llena los campos obligatorios')
     return
   }
@@ -258,17 +364,6 @@ const eliminar = async () => {
     cargarFacturas()
   }
 }
-const precios = {
-  primera: 38,
-  segunda: 35,
-  tercera: 30,
-  cuarta: 25,
-  quinta: 19,
-  sexta: 15,
-  septima: 10,
-  octava: 6,
-  novena: 4,
-}
 
 const compartirWhatsApp = (factura) => {
   const texto =
@@ -278,33 +373,107 @@ const compartirWhatsApp = (factura) => {
     `Detalle:\n` +
     Object.entries(piñasKeys)
       .map(([key, label]) => {
-        const cantidad = factura[key] || 0;
-        const precio = precios[key] || 0;
-        const subtotal = cantidad * precio;
-        return `  ${label}: ${cantidad} x C$ ${precio} = C$ ${subtotal}`;
+        const cantidad = factura[key] || 0
+        const precio = precios.value[key] || 0
+        const subtotal = cantidad * precio
+        return `  ${label}: ${cantidad} x C$ ${precio} = C$ ${subtotal}`
       })
       .join('\n') +
     `\nTotal piñas: ${totalPinas(factura)}` +
     `\nTotal C$: ${totalDinero(factura)}` +
-    `\nPromedio: ${promedioValor(factura)}`;
+    `\nPromedio: ${promedioValor(factura)}`
 
-  const numero = factura.celular.replace(/\D/g, ''); // solo números
-  const url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
-  window.open(url, '_blank');
-};
+  const numero = factura.celular.replace(/\D/g, '')
+  const url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
+  window.open(url, '_blank')
+}
+
+const imprimirFactura = (factura) => {
+  const contenido = `
+    <html>
+      <head>
+        <title>Factura de Piñas</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          
+          table { width: 100%; border-collapse: collapse; margin-top: 10px;}
+          th, td { border: 1px solid #4caf50; padding: 8px; text-align: left;}
+          h1, h2, h3, p { margin: 0; padding: 0; 
+          
+          }
+          .resumen { margin-top: 20px; font-weight: bold; 
+          }
+          
+        </style>
+      </head>
+      <body>
+       
+          <h2>Factura de Piñas</h2>
+        <p><strong>Fecha:</strong> ${factura.fecha}</p>
+        <p><strong>Nombre:</strong> ${factura.nombre}</p>
+        <p><strong>Celular:</strong> ${factura.celular}</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${Object.entries(piñasKeys)
+              .map(([key, label]) => {
+                const cant = factura[key] || 0
+                if (cant === 0) return ''
+                const precio = precios.value[key] || 0
+                const subtotal = cant * precio
+                return `
+                  <tr>
+                    <td>${label}</td>
+                    <td>${cant}</td>
+                    <td>C$ ${precio}</td>
+                    <td>C$ ${subtotal}</td>
+                  </tr>
+                `
+              })
+              .join('')}
+          </tbody>
+        </table>
+
+        <div class="resumen">
+          <p>Total Piñas: ${totalPinas(factura)}</p>
+          <p>Total C$: ${totalDinero(factura)}</p>
+          <p>Promedio C$: ${promedioValor(factura)}</p>
+        </div>
+
+      </body>
+    </html>
+  `
+  const ventana = window.open('', '', 'width=600,height=700')
+  ventana.document.write(contenido)
+  ventana.document.close()
+  ventana.focus()
+  ventana.print()
+  ventana.close()
+}
 
 onMounted(async () => {
   await obtenerUsuario()
+  await cargarPrecios()
   await cargarFacturas()
 })
 </script>
 
+
 <style>
 .facturas-container {
-  width: 90%;
+  width: 95%;
   margin: auto;
   padding: 1px;
   font-family: Arial, sans-serif;
+  
 }
 
 .filtros {
@@ -343,17 +512,19 @@ onMounted(async () => {
 .lista-facturas {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: .5rem; 
   width: 100%;
 }
 
 .card-factura {
   border: 1px solid #4caf50;
   border-radius: 8px;
-  width: 90%;
-  padding: 1rem;
+  width: 80%;
+  padding: 10px;
+  margin: auto;
   background: #f1f7f2;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
   
 }
 
@@ -362,6 +533,18 @@ onMounted(async () => {
   justify-content: space-between;
   margin-bottom: 0.5rem;
   font-weight: bold;
+}
+
+.tabla-factura{
+  width: 95%;
+  margin: auto;
+}
+
+.tabla-factura th,
+.tabla-factura td {
+  border: 1px solid #4caf50; /* color de las líneas */
+  padding: 8px;
+  text-align: left;
 }
 
 .detalle-pinas {
@@ -508,13 +691,42 @@ onMounted(async () => {
 
 /* Responsive */
 @media (max-width: 600px) {
+  .facturas-container {
+  width: 100%;
+  margin: auto;
+  padding: 1px;
+  font-family: Arial, sans-serif;
+}
   .input-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .card-factura {
+  border: 1px solid #4caf50;
+  border-radius: 8px;
+  width: 100%;
+  padding: 10px;
+  margin: auto;
+  background: #f1f7f2;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
+}
   .resumen {
     flex-direction: column;
     gap: 0.2rem;
   }
+
+  .tabla-factura{
+    width: 100%;
+    
+    margin: auto;
+  }
+  .tabla-factura th,
+  .tabla-factura td {
+    border: 1px solid #4caf50; /* color de las líneas */
+    padding: 0px;
+    text-align: left;
+  }
+
   
 }
 </style>
