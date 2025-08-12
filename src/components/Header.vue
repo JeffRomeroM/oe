@@ -6,7 +6,9 @@
       <button @click="irARuta('ganaderia')">Ganadería</button>
     </div>
     <div class="user-info" v-if="fullName" @click="mostrarModal = true">
-      <img src="/public/iconoagro.png" alt="icono" class="icono" />
+      <div class="icono">
+        {{ obtenerIniciales(fullName) }}
+      </div>
       <span class="user-name">{{ fullName }}</span>
     </div>
 
@@ -27,6 +29,14 @@
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import { useRouter } from 'vue-router'
+
+const obtenerIniciales = (nombre) => {
+  return nombre
+    .split(' ')
+    .map(p => p[0])
+    .join('')
+    .toUpperCase()
+}
 
 const irARuta = (ruta) => {
   router.push(`/${ruta}`)
@@ -86,7 +96,7 @@ button {
   cursor: pointer;
   background-color: white;
   color: #4caf50;
- 
+  font-size: 17px;
 }
 
 .user-info {
@@ -99,17 +109,23 @@ button {
   padding: 0.4rem 0.8rem;
   border-radius: 999px;
   transition: background 0.2s ease-in-out;
+  margin-right: 5px;
 }
 .user-info:hover {
   background-color: #f0fdf4;
 }
 
 .icono {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #4caf50;
+  background-color:  #4caf50;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  line-height: 30px;
+  font-size: 1.1rem;
+
 }
 
 .user-name {

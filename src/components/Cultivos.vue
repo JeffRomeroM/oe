@@ -37,6 +37,7 @@
 </template>
 
 <script setup>
+// ...existing code...
 import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 
@@ -46,22 +47,23 @@ const mostrarConfirmacion = ref(false)
 const nuevoCultivo = ref('')
 const cultivoSeleccionado = ref(null)
 const modoEditar = ref(false)
-let userId = null
+const userId = ref(null) // Cambia a ref
 
 const obtenerUsuario = async () => {
   const { data } = await supabase.auth.getUser()
-  userId = data.user?.id || null
+  userId.value = data.user?.id || null // Asigna a .value
 }
 
 const cargarCultivos = async () => {
-  if (!userId) return
+  if (!userId.value) return // Usa .value
   const { data } = await supabase
     .from('cultivos')
     .select('*')
-    .eq('user_id', userId)
+    .eq('user_id', userId.value) // Usa .value
     .order('created_at', { ascending: false })
   cultivos.value = data || []
 }
+// ...existing code...
 
 const abrirModalEditar = (cultivo) => {
   modoEditar.value = true
@@ -125,13 +127,14 @@ onMounted(async () => {
 .container {
   text-align: center;
   padding: 1rem;
+  
   font-family: sans-serif;
 }
 
 .btn-primary,
 .btn-secundario,
 .btn-peligro {
-  padding: 0.5rem 1rem;
+  padding: 3px 8px;
   border: none;
   border-radius: 0.5rem;
   margin: 0.2rem;
@@ -141,10 +144,12 @@ onMounted(async () => {
 .btn-primary {
   background: #4caf50;
   color: white;
+  padding: 10px 16px;
 }
 
 .btn-secundario {
   background: #ccc;
+
 }
 
 .btn-peligro {
@@ -155,13 +160,17 @@ onMounted(async () => {
 .cultivo-lista {
   list-style: none;
   padding: 0;
-  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .cultivo-item {
-  border: 1px solid;
+  border: 1px solid #ddd;
   padding: 0.5rem;
+  margin: auto;
   margin-bottom: 0.5rem;
+  width: 100%;
+  
   border-radius: 0.5rem;
   display: flex;
   justify-content: space-between;
@@ -171,10 +180,12 @@ onMounted(async () => {
 .modal {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(236, 235, 235, 0.4);
+  background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: auto;
+  z-index: 1000;
 }
 
 .modal-contenido {

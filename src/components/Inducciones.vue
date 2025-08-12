@@ -2,7 +2,7 @@
   <div class="inducciones-container">
     <h2>Inducciones</h2>
 
-    <button @click="abrirModal" class="btn-agregar">Nueva inducción</button>
+    <button @click="abrirModal" class="btn-agregar">Nueva Inducción</button>
 
     <ul class="lista">
       <li v-for="n in inducciones" :key="n.id">

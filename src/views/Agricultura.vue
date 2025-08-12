@@ -1,6 +1,5 @@
 <template>
   <Header />
-    <RouterLink class="regresar" to="dashboard"> Regresar </RouterLink>
     <Cultivos />
   <div>
     <nav class="submenu">
@@ -56,6 +55,7 @@ const vista = ref('resumen')
     text-decoration: none;
     color: #4caf50;
     font-weight: 900;
+    margin-left: 20px;
 }
 .submenu button.activo {
   border-bottom: 2px solid #4caf50;

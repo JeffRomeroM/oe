@@ -53,7 +53,8 @@ onMounted(cargarUsuarios)
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-left: 45%;
+  margin-left: 35%;
+  font-size: 17px;
 }
 
 .modal-overlay {
@@ -65,6 +66,7 @@ onMounted(cargarUsuarios)
   justify-content: center;
   z-index: 20000;
   width: 100%;
+  margin: auto;
 }
 
 .modal-contenido {
@@ -73,7 +75,7 @@ onMounted(cargarUsuarios)
   width: 80%;
   padding: 10px;
   margin: auto;
-  margin-left: 3%;
+  margin-left: 1%;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
