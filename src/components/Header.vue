@@ -76,7 +76,7 @@ const logout = async () => {
   top: 0;
   background-color: white;
   z-index: 100; 
-  width: 100%;
+  width: 96%;
   justify-content: space-between;
 }
 
@@ -96,7 +96,7 @@ button {
   cursor: pointer;
   background-color: white;
   color: #4caf50;
-  font-size: 17px;
+  font-size:  14px;
 }
 
 .user-info {
@@ -123,9 +123,9 @@ button {
   font-weight: bold;
   color: #ffffff;
   text-align: center;
-  line-height: 30px;
-  font-size: 1.1rem;
-
+  line-height: 34px;
+  font-size: 16px;
+  
 }
 
 .user-name {
