@@ -76,7 +76,7 @@ const logout = async () => {
   top: 0;
   background-color: white;
   z-index: 100; 
-  width: 96%;
+  width: 98%;
   justify-content: space-between;
 }
 
