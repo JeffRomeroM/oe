@@ -80,8 +80,9 @@ const guardarCultivo = async () => {
       .eq('id', cultivoSeleccionado.value.id)
   } else {
     await supabase
-      .from('cultivos')
-      .insert([{ nombre: nuevoCultivo.value, user_id: userId }])
+  .from('cultivos')
+  .insert([{ nombre: nuevoCultivo.value, user_id: userId.value }])
+
   }
   nuevoCultivo.value = ''
   cultivoSeleccionado.value = null

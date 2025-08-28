@@ -3,13 +3,32 @@
     <h2>Egresos</h2>
     <div class="total-ingresos">
       Total egresos: <strong> C$ {{ totalEgresos }}</strong>
+      
     </div>
+    <button @click="abrirModal()" class="btn-agregar">Agregar Egreso</button>
     <div class="filtros">
-      <select v-model="filtroCultivo" @change="filtrarEgresos">
-        <option value="">Todos los cultivos</option>
-        <option v-for="c in cultivosUnicos" :key="c" :value="c">{{ c }}</option>
-      </select>
-      <button @click="abrirModal()">Agregar Egreso</button>
+      
+      <button @click="exportarPDF" class="btn-exportar">Exportar PDF</button>
+
+      <div class="filtros-lateral">
+        <button
+          :class="['btn-cultivo', { activo: filtroCultivo === '' }]"
+          @click="seleccionarCultivo('')"
+        >
+          Todos
+        </button>
+        <button
+          v-for="c in cultivosUnicos"
+          :key="c"
+          :class="['btn-cultivo', { activo: filtroCultivo === c }]"
+          @click="seleccionarCultivo(c)"
+        >
+          {{ c }}
+        </button>
+      </div>
+
+
+      
     </div>
 
     <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
@@ -44,7 +63,11 @@
 
     <ul class="lista-ingresos">
       <li v-for="item in egresosFiltrados" :key="item.id" class="item-ingreso">
-        <span><strong>Cultivo: </strong>{{ item.cultivo }} - <strong>Monto: C$ </strong>{{ item.monto }} - <strong>Concepto: </strong>{{ item.concepto }} - <strong>Fecha: </strong>{{ item.fecha }}</span>
+        <h4><strong>Cultivo: </strong>{{ item.cultivo }}</h4>
+        <p><strong>Monto: C$ </strong>{{ item.monto }}</p>
+        <p><strong>Concepto: </strong>{{ item.concepto }}</p>
+        <p><strong>Fecha: </strong>{{ item.fecha }}</p>
+        
         <div>
           <button @click="editar(item)" class="btn-editar">Editar</button>
           <button @click="confirmarEliminacion(item.id)" class="btn-eliminar">Eliminar</button>
@@ -76,6 +99,14 @@ const obtenerUsuario = async () => {
   const { data } = await supabase.auth.getUser()
   userId = data.user?.id || null
 }
+
+
+// ...existing code...
+const seleccionarCultivo = (cultivo) => {
+  filtroCultivo.value = cultivo
+  filtrarEgresos()
+}
+// ...existing code...
 
 
 const cargarCultivos= async () => {
@@ -179,9 +210,52 @@ const cultivosUnicos = computed(() => {
   return [...new Set(nombres)]
 })
 
+
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+
+// ...
+
+const exportarPDF = () => {
+  const doc = new jsPDF()
+
+  // Título
+  doc.setFontSize(16)
+  doc.text('Reporte de Egresos', 14, 20)
+
+  // Subtítulo con filtro
+  const tituloFiltro = filtroCultivo.value ? `Cultivo: ${filtroCultivo.value}` : 'Todos los cultivos'
+  doc.setFontSize(12)
+  doc.text(tituloFiltro, 14, 28)
+
+  // Preparar datos de la tabla
+  const filas = egresosFiltrados.value.map(e => [
+    e.cultivo,
+    `C$ ${e.monto}`,
+    e.concepto,
+    e.fecha
+  ])
+
+  autoTable(doc, {
+    startY: 35,
+    head: [['Cultivo', 'Monto', 'Concepto', 'Fecha']],
+    body: filas,
+    theme: 'grid',
+    headStyles: { fillColor: [76, 175, 80] },
+  })
+
+  // Total al final
+  doc.setFontSize(12)
+  doc.text(`Total: C$ ${totalEgresos.value}`, 14, doc.lastAutoTable.finalY + 10)
+
+  // Descargar
+  doc.save('egresos.pdf')
+}
+
+
 onMounted(async () => {
   await obtenerUsuario()
-  await cargarCultivos()//////////////////////////////////////////////////
+  await cargarCultivos()
   await cargarEgresos()
 })
 </script>
@@ -196,6 +270,70 @@ onMounted(async () => {
   border-radius: 8px;
   background: #fafafa;
 }
+
+
+.filtros-lateral {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+
+
+
+
+.btn-cultivo {
+  background: #e0e0e0;
+  color: #333;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-right: 0;
+  width: 100%;
+  text-align: left;
+}
+.btn-agregar{
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+}
+.btn-cultivo.activo {
+  background: #4caf50;
+  color: #fff;
+}
+
+.btn-cultivo:hover {
+  background: #81c784;
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .filtros-lateral {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+  .btn-cultivo {
+    padding: 8px 10px;
+    font-size: 15px;
+    border-radius: 14px;
+    width: auto;
+  }
+}
+
+
 
 .total-ingresos strong {
   color: #17a31c;
@@ -216,16 +354,7 @@ onMounted(async () => {
   border-radius: 4px;
 }
 
-.filtros button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
+
 
 .filtros button:hover {
   background-color: #45a049;
