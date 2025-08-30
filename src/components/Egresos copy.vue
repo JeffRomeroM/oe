@@ -1,88 +1,3 @@
-<template>
-  <div class="crud-container">
-    <h2>Egresos</h2>
-
-    <div class="total-ingresos">
-      Total egresos: <strong> C$ {{ totalEgresos }}</strong>
-    </div>
-
-    <button @click="abrirModal()" class="btn-agregar">Agregar Egreso</button>
-
-    <div class="filtros">
-      <button @click="exportarPDF" class="btn-exportar">Exportar PDF</button>
-
-      <div class="filtros-lateral">
-        <!-- Checkbox todos -->
-        <label>
-          <input
-            type="checkbox"
-            :checked="filtroCultivo.length === 0"
-            @change="seleccionarCultivo('TODOS')"
-          />
-          <span>Todos</span>
-        </label>
-
-        <!-- Checkbox cultivos -->
-        <label v-for="c in cultivosUnicos" :key="c">
-          <input
-            type="checkbox"
-            :checked="filtroCultivo.includes(c)"
-            @change="seleccionarCultivo(c)"
-          />
-          <span>{{ c }}</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Modal -->
-    <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
-      <div class="modal">
-        <form @submit.prevent="guardarEgreso" class="formulario">
-          <select v-model="form.cultivo" required>
-            <option value="" disabled>Seleccione un cultivo</option>
-            <option v-for="c in cultivos" :key="c" :value="c">{{ c }}</option>
-          </select>
-
-          <input v-model.number="form.monto" placeholder="Monto" type="number" min="0" required />
-          <input v-model="form.concepto" placeholder="Concepto" required />
-          <input v-model="form.fecha" type="date" required />
-
-          <div class="botones-modal">
-            <button type="submit">{{ editando ? 'Actualizar' : 'Guardar' }}</button>
-            <button type="button" @click="cerrarModal">Cancelar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Confirmación -->
-    <div v-if="confirmacionVisible" class="modal-overlay" @click.self="cancelarEliminacion">
-      <div class="modal confirmacion">
-        <p>¿Estás seguro que deseas eliminar este egreso?</p>
-        <div class="botones-modal">
-          <button @click="eliminarConfirmado" class="btn-eliminar">Eliminar</button>
-          <button @click="cancelarEliminacion" class="btn-cancelar">Cancelar</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lista -->
-    <ul class="lista-ingresos">
-      <li v-for="item in egresosFiltrados" :key="item.id" class="item-ingreso">
-        <h4><strong>Cultivo: </strong>{{ item.cultivo }}</h4>
-        <p><strong>Monto: C$ </strong>{{ item.monto }}</p>
-        <p><strong>Concepto: </strong>{{ item.concepto }}</p>
-        <p><strong>Fecha: </strong>{{ item.fecha }}</p>
-        
-        <div>
-          <button @click="editar(item)" class="btn-editar">Editar</button>
-          <button @click="confirmarEliminacion(item.id)" class="btn-eliminar">Eliminar</button>
-        </div>
-      </li>
-    </ul>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { supabase } from '../supabase'
@@ -91,7 +6,7 @@ import autoTable from 'jspdf-autotable'
 
 const egresos = ref([])
 const egresosFiltrados = ref([])
-const filtroCultivo = ref([]) // ahora array
+const filtroCultivo = ref([]) // 🔹 array
 const cultivos = ref([])
 
 const form = ref({ cultivo: '', monto: 0, concepto: '', fecha: '' })
@@ -103,16 +18,15 @@ let idActual = null
 let idParaEliminar = null
 let userId = null
 
-// Usuario
 const obtenerUsuario = async () => {
   const { data } = await supabase.auth.getUser()
   userId = data.user?.id || null
 }
 
-// Selección múltiple
+// ✅ Selección múltiple de cultivos
 const seleccionarCultivo = (cultivo) => {
   if (cultivo === 'TODOS') {
-    filtroCultivo.value = [] // ninguno = todos
+    filtroCultivo.value = [] // 🔹 vacío = todos
   } else {
     if (filtroCultivo.value.includes(cultivo)) {
       filtroCultivo.value = filtroCultivo.value.filter(c => c !== cultivo)
@@ -123,8 +37,7 @@ const seleccionarCultivo = (cultivo) => {
   filtrarEgresos()
 }
 
-// Cargar cultivos
-const cargarCultivos= async () => {
+const cargarCultivos = async () => {
   if (!userId) return
   const { data, error } = await supabase
     .from('cultivos')
@@ -135,7 +48,6 @@ const cargarCultivos= async () => {
   }
 }
 
-// Cargar egresos
 const cargarEgresos = async () => {
   if (!userId) return
   const { data, error } = await supabase
@@ -149,14 +61,18 @@ const cargarEgresos = async () => {
   }
 }
 
-// Guardar
 const guardarEgreso = async () => {
   if (!userId) return alert('Usuario no autenticado')
 
   if (editando.value) {
-    await supabase.from('egresos').update({ ...form.value, user_id: userId }).eq('id', idActual)
+    await supabase
+      .from('egresos')
+      .update({ ...form.value, user_id: userId })
+      .eq('id', idActual)
   } else {
-    await supabase.from('egresos').insert([{ ...form.value, user_id: userId }])
+    await supabase
+      .from('egresos')
+      .insert([{ ...form.value, user_id: userId }])
   }
 
   form.value = { cultivo: '', monto: 0, concepto: '', fecha: '' }
@@ -166,7 +82,6 @@ const guardarEgreso = async () => {
   cargarEgresos()
 }
 
-// Editar
 const editar = (item) => {
   form.value = { ...item }
   idActual = item.id
@@ -174,15 +89,16 @@ const editar = (item) => {
   abrirModal(true)
 }
 
-// Eliminar
 const confirmarEliminacion = (id) => {
   idParaEliminar = id
   confirmacionVisible.value = true
 }
+
 const cancelarEliminacion = () => {
   confirmacionVisible.value = false
   idParaEliminar = null
 }
+
 const eliminarConfirmado = async () => {
   if (!idParaEliminar || !userId) return
   await supabase.from('egresos').delete().eq('id', idParaEliminar).eq('user_id', userId)
@@ -191,7 +107,6 @@ const eliminarConfirmado = async () => {
   cargarEgresos()
 }
 
-// Modal
 const abrirModal = (editar = false) => {
   if (!editar) {
     form.value = { cultivo: '', monto: 0, concepto: '', fecha: '' }
@@ -200,14 +115,15 @@ const abrirModal = (editar = false) => {
   }
   modalVisible.value = true
 }
+
 const cerrarModal = () => {
   modalVisible.value = false
 }
 
-// Filtrar
+// ✅ Filtro con múltiples checkboxes
 const filtrarEgresos = () => {
   if (filtroCultivo.value.length === 0) {
-    egresosFiltrados.value = [...egresos.value] // todos
+    egresosFiltrados.value = [...egresos.value]
   } else {
     egresosFiltrados.value = egresos.value.filter(i =>
       filtroCultivo.value.includes(i.cultivo)
@@ -215,35 +131,33 @@ const filtrarEgresos = () => {
   }
 }
 
-// Totales
 const totalEgresos = computed(() =>
   egresosFiltrados.value.reduce((acc, curr) => acc + Number(curr.monto), 0)
 )
 
-// Cultivos únicos
 const cultivosUnicos = computed(() => {
   const nombres = egresos.value.map(i => i.cultivo)
   return [...new Set(nombres)]
 })
 
-// Exportar PDF
+// ✅ Exportar PDF mostrando todos los cultivos seleccionados
 const exportarPDF = () => {
   const doc = new jsPDF()
-
   doc.setFontSize(16)
   doc.text('Reporte de Egresos', 14, 20)
 
-  // Subtítulo
+  // Título de filtro
   let tituloFiltro = ''
   if (filtroCultivo.value.length === 0) {
     tituloFiltro = 'Todos los cultivos'
   } else {
     tituloFiltro = `Cultivos: ${filtroCultivo.value.join(', ')}`
   }
+
   doc.setFontSize(12)
   doc.text(tituloFiltro, 14, 28)
 
-  // Datos
+  // Filas de la tabla
   const filas = egresosFiltrados.value.map(e => [
     e.cultivo,
     `C$ ${e.monto}`,
@@ -262,7 +176,7 @@ const exportarPDF = () => {
   doc.setFontSize(12)
   doc.text(`Total: C$ ${totalEgresos.value}`, 14, doc.lastAutoTable.finalY + 10)
 
-  // Nombre archivo
+  // Nombre del archivo: cultivos seleccionados + fecha
   const fechaHoy = new Date()
   const dia = fechaHoy.getDate().toString().padStart(2, '0')
   const mes = (fechaHoy.getMonth() + 1).toString().padStart(2, '0')
@@ -273,6 +187,7 @@ const exportarPDF = () => {
   if (filtroCultivo.value.length === 0) {
     nombreCultivos = 'Todos'
   } else {
+    // reemplazar espacios por guion bajo para el nombre del archivo
     nombreCultivos = filtroCultivo.value.map(c => c.replace(/\s+/g, '_')).join('-')
   }
 
@@ -280,12 +195,60 @@ const exportarPDF = () => {
   doc.save(nombreArchivo)
 }
 
+
 onMounted(async () => {
   await obtenerUsuario()
   await cargarCultivos()
   await cargarEgresos()
 })
 </script>
+
+<template>
+  <div class="crud-container">
+    <h2>Egresos</h2>
+    <div class="total-ingresos">
+      Total egresos: <strong> C$ {{ totalEgresos }}</strong>
+    </div>
+
+    <button @click="abrirModal()" class="btn-agregar">Agregar Egreso</button>
+    <button @click="exportarPDF" class="btn-agregar">Exportar PDF</button>
+
+    <!-- ✅ Filtros múltiples con checkboxes -->
+<div class="filtros-lateral">
+  <label>
+    <input
+      type="checkbox"
+      :checked="filtroCultivo.length === 0"
+      @change="seleccionarCultivo('TODOS')"
+    />
+    <span>Todos</span>
+  </label>
+
+  <label v-for="c in cultivosUnicos" :key="c">
+    <input
+      type="checkbox"
+      :checked="filtroCultivo.includes(c)"
+      @change="seleccionarCultivo(c)"
+    />
+    <span>{{ c }}</span>
+  </label>
+</div>
+
+    <!-- Lista de egresos -->
+    <ul class="lista-ingresos">
+      <li v-for="item in egresosFiltrados" :key="item.id" class="item-ingreso">
+        <h4><strong>Cultivo: </strong>{{ item.cultivo }}</h4>
+        <p><strong>Monto: C$ </strong>{{ item.monto }}</p>
+        <p><strong>Concepto: </strong>{{ item.concepto }}</p>
+        <p><strong>Fecha: </strong>{{ item.fecha }}</p>
+        <div>
+          <button @click="editar(item)" class="btn-editar">Editar</button>
+          <button @click="confirmarEliminacion(item.id)" class="btn-eliminar">Eliminar</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</template>
 
 <style scoped>
 .crud-container {
@@ -301,28 +264,46 @@ onMounted(async () => {
 
 .filtros-lateral {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
-  align-items: flex-start;
 }
 
+/* Cada filtro es como un "pill" */
 .filtros-lateral label {
-  background-color: #defcdf;
-  padding: 5px 0px;
-  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 20px;
+  padding: 0px 2px;
+  background: #e0e0e0;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
-.filtros-lateral input[type="checkbox"]{
+
+/* Ocultamos el checkbox por defecto */
+.filtros-lateral input[type="checkbox"] {
   display: none;
+  padding: 9px 12px;
 }
+
+/* ✅ Cuando está seleccionado */
 .filtros-lateral input[type="checkbox"]:checked + span {
   background: #4caf50;
   color: white;
-  padding: 4px 8px;
-  border-radius: 10px;
-  width: 100%;
-  text-align: left;
+  border-radius: 14px;
+  padding: 6px 12px;
 }
+
+/* Hover */
+.filtros-lateral label:hover {
+  background: #d5d5d5;
+}
+
+
+
 
 
 
@@ -360,11 +341,6 @@ onMounted(async () => {
   color: #fff;
 }
 
-
-.btn-exportar{
-  background-color: #2196f3;
-  font-size: medium;
-}
 @media (max-width: 480px) {
   .filtros-lateral {
     flex-direction: row;
@@ -383,7 +359,7 @@ onMounted(async () => {
 
 
 .total-ingresos strong {
-  color: #f44336;
+  color: #17a31c;
 }
 
 .filtros {
@@ -562,4 +538,4 @@ onMounted(async () => {
     gap: 5px;
   }
 }
-</style>  
+</style>
