@@ -46,6 +46,8 @@ import '@material/web/checkbox/checkbox.js';
   width: 4%;
   height: 100vh;
   z-index: 1000;
+  background: #ffffff;
+
 }
 .menu {
   display: flex;
@@ -56,7 +58,6 @@ import '@material/web/checkbox/checkbox.js';
   position: fixed;
   top: 0;
   left: 0;
-  background: #ffffff;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
   gap: 2rem;
   z-index: 1000;
@@ -110,7 +111,6 @@ import '@material/web/checkbox/checkbox.js';
 
 .router-link-active {
   color: #4caf50;
-  background-color: #faeaea;
   padding: 3px;
   border-radius: 4px;
 }
@@ -137,20 +137,23 @@ import '@material/web/checkbox/checkbox.js';
     bottom: 0;
     width: 100%;
     height: 60px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff !important;
   }
   .menu {
     flex-direction: row;
     justify-content: space-around; /* 🔹 reparte los 5 ítems de forma igual */
     align-items: center;
     height: 60px;
-    width: 99%;
+    width: 95%;
     margin: auto !important;
     bottom: 0;
     top: auto;
     left: 0;
     right: 0;
     padding: 0 1rem;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    background: transparent !important;
+  
   }
 
   .nav-item {
@@ -161,7 +164,6 @@ import '@material/web/checkbox/checkbox.js';
     font-size: 16px;
     color: #555;
     position: relative;
-    background-color: #ffffff;
   }
 
   .icon {
@@ -185,7 +187,6 @@ import '@material/web/checkbox/checkbox.js';
   .router-link-active .label  {
     color: #4caf50;
     font-weight: bold;
-    background-color: #ffffff;
     padding: 0px;
   }
 }
