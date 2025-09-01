@@ -141,12 +141,13 @@ import '@material/web/checkbox/checkbox.js';
 
   }
   .menu {
-    flex-direction: row;
+    display: flex;
     justify-content: space-around; /* 🔹 reparte los 5 ítems de forma igual */
     align-items: center;
     height: 60px;
     width: 95%;
     margin: auto !important;
+    flex-wrap: wrap;
     bottom: 0;
     top: auto;
     left: 0;
@@ -156,16 +157,15 @@ import '@material/web/checkbox/checkbox.js';
   }
 
   .nav-item {
-    flex: 1; /* 🔹 cada ítem ocupa el mismo espacio */
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 16px;
     color: #555;
-  width: 10% !important;
-  margin: auto !important;
-  background-color: #ffffff !important;
-    position: relative;
+    width: 10% !important;
+    margin: auto !important;
+    background-color: #ffffff !important;
+ 
   }
 
   .icon {
