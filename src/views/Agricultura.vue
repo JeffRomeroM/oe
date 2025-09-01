@@ -1,39 +1,45 @@
 <template>
   <Header />
-    <Cultivos />
-  <div>
+  <div class="opciones-container">
+    
     <nav class="submenu">
-      <button :class="{ activo: vista === 'resumen' }" @click="vista = 'resumen'">Resumen</button>
+     
       <button :class="{ activo: vista === 'ingresos' }" @click="vista = 'ingresos'">Ingresos</button>
       <button :class="{ activo: vista === 'egresos' }" @click="vista = 'egresos'">Egresos</button>
     </nav>
     
     <div class="contenido">
-      <Resumen v-if="vista === 'resumen'" />
-      <Ingresos v-else-if="vista === 'ingresos'" />
+      <Ingresos v-if="vista === 'ingresos'" />
       <Egresos v-else-if="vista === 'egresos'" />
     </div>
+    <MenuAbajo />
   </div>
+  
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import Resumen from '../components/Resumen.vue'
 import Ingresos from '../components/Ingresos.vue'
 import Egresos from '../components/Egresos.vue'
 import Header from '../components/Header.vue'
 
-import { RouterLink } from 'vue-router'
-import Cultivos from '../components/Cultivos.vue'
+import MenuAbajo from '../components/MenuAbajo.vue'
 
-const vista = ref('resumen')
+const vista = ref('ingresos')
 </script>
 
 <style scoped>
+.opciones-container {
+  max-width: 600px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto !important;
+}
 .submenu {
   display: flex;
   justify-content: space-around;
-  background-color: #ffffff;
   border-bottom: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   padding: 10px;

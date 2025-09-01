@@ -193,7 +193,7 @@ onMounted(async () => {
 <style >
 .crud-container {
   max-width: 96%;
-  margin: 30px auto;
+  margin: 30px auto !important;
   font-family: Arial, sans-serif;
   padding: 15px;
   border: 1px solid #ddd;
@@ -247,7 +247,7 @@ onMounted(async () => {
   align-items: center;
   background: white;
   margin-bottom: 8px;
-  padding: 10px;
+  padding: 10px !important;
   border-radius: 5px;
   border: 1px solid #ddd;
   flex-wrap: wrap;
@@ -261,7 +261,7 @@ onMounted(async () => {
 .btn-editar,
 .btn-eliminar {
   margin-left: 5px;
-  padding: 6px 10px;
+  padding: 6px 10px !important;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -270,11 +270,11 @@ onMounted(async () => {
 }
 
 .btn-editar {
-  background-color: #4caf50;
+  background-color: #2196f3;
 }
 
 .btn-editar:hover {
-  background-color: #45a049;
+  background-color: #6db8f5;
 }
 
 .btn-eliminar {

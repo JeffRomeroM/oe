@@ -101,9 +101,9 @@ const vista = ref('inducciones')
 <style >
 .resumen-container {
   width: 90%;
-  margin: auto;
+  margin: 10px auto !important;
   font-family: Arial, sans-serif;
-  padding: 10px;
+  padding: 10px!important;
   border: 1px solid #ccc;
   border-radius: 8px; 
 }
@@ -124,6 +124,7 @@ select {
 .totales p {
   font-size: 18px;
   margin: 8px 0;
+  padding: 5px!important;
 }
 
 .positivo {
@@ -142,6 +143,7 @@ select {
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   padding: 10px;
   flex-wrap: wrap;
+  margin-top: 20px !important;
 }
 
 .submenu button {
@@ -171,6 +173,7 @@ select {
 
 .contenido {
   padding: 20px;
+  margin-top: 10px!important;
 }
 
 /* Responsive */

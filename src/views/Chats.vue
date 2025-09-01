@@ -1,10 +1,11 @@
 <template>
-  <div class="chat-container" :class="{ expandido }">
+  <Header/>
+<div class="chat-container-padre">
+  
+    <div class="chat-container">
+    
     <div class="chat-header">
       <h2>Mensajes</h2>
-      <button class="btn-expandir" @click="expandido = !expandido">
-        {{ expandido ? 'Minimizar' : 'Expandir' }}
-      </button>
     </div>
 
     <div class="chat-mensajes" ref="chatScroll">
@@ -51,12 +52,16 @@
       ></textarea>
       <button type="submit">Enviar</button>
     </form>
+    <MenuAbajo /> 
   </div>
+</div>
 </template>
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
 import { supabase } from '../supabase'
+import MenuAbajo from '../components/MenuAbajo.vue'
+import Header from '../components/Header.vue'
 
 const mensajes = ref([])
 const mensaje = ref('')
@@ -64,7 +69,6 @@ const mensajeEditado = ref('')
 const editandoId = ref(null)
 const userId = ref(null)
 const chatScroll = ref(null)
-const expandido = ref(false)
 
 const textarea = ref(null)
 
@@ -154,109 +158,120 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.chat-container-padre {
+  display: flex;
+  width: 100%;
+
+}
+
+/* Caja principal */
 .chat-container {
-  max-width: 75%;
-  margin: auto;
+  width: 75%;
+  max-width: 900px;
   display: flex;
   flex-direction: column;
-  height: 40vh;
+  height: 70vh;
   border: 1px solid #ccc;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  background: #fefefe;
-  transition: height 0.3s ease;
+  background: #fff;
   z-index: 100;
+  position: fixed;
+  margin: auto !important;
+  bottom: 70px; /* deja espacio al menú inferior */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.chat-container.expandido {
-  height: 90vh !important;
-}
-
+/* Header */
 .chat-header {
   background: #4caf50;
   color: white;
   text-align: center;
-  padding: 1rem;
+  padding: 0.8rem;
   position: relative;
-  border-radius: 10px 10px 0 0;
+  border-radius: 12px 12px 0 0;
+  font-weight: bold;
 }
 
-.btn-expandir {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgb(189, 252, 153);
-  color: #4caf50;
-  border: none;
-  padding: 5px 10px;
-  font-size: 12px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
+/* Lista de mensajes */
 .chat-mensajes {
   flex: 1;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   background: #f6f6f6;
+  scroll-behavior: smooth;
 }
 
+/* Estilo general de burbujas */
 .mensaje {
   display: flex;
-  flex-wrap: wrap;
   align-items: flex-start;
   gap: 8px;
-  margin-bottom: 1rem;
-  max-width: 90%;
+  margin-bottom: 0.8rem;
+  max-width: 70%;
   word-wrap: break-word;
-  padding: 0.5rem;
-  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
   position: relative;
+  line-height: 1.4;
 }
 
+/* Mensaje propio */
 .mensaje.mio {
-  background: #d0f0c0;
+  background: #83c460;
   align-self: flex-end;
+  margin-top: 10px;
   text-align: right;
   flex-direction: row-reverse;
-  margin-left: 30px;
+  border-bottom-right-radius: 4px;
 }
 
+/* Mensaje de otro */
 .mensaje.otro {
   background: #ffffff;
+  margin-top: 10px;
+  padding-top:50px;
   align-self: flex-start;
+  border-bottom-left-radius: 4px;
 }
 
+/* Avatar */
 .avatar {
   background: #4caf50;
   color: white;
   font-weight: bold;
-  width: 25px;
-  height: 25px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 14px;
   flex-shrink: 0;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
+/* Info del mensaje */
 .mensaje-info {
-  font-size: 12px;
-  color: #555;
+  font-size: 11px;
+  color: #666;
   margin-bottom: 2px;
 }
 
 .contenido {
   white-space: pre-wrap;
   word-break: break-word;
+  font-size: 14px;
 }
 
+/* Input */
 .chat-input {
   display: flex;
-  padding: 10px;
-  border-top: 1px solid #ccc;
+  align-items: center;
+  padding: 8px;
+  border-top: 1px solid #ddd;
   background: #fff;
 }
 
@@ -264,29 +279,31 @@ onMounted(async () => {
   flex: 1;
   resize: none;
   overflow: hidden;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #bbb;
-  border-radius: 6px;
-  font-size: 16px;
-  min-height: 10px;
-  max-height: 200px;
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  max-height: 150px;
 }
 
 .chat-input button {
   padding: 0 16px;
-  margin-left: 8px;
+  margin-left: 6px;
   background: #4caf50;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .input-editar {
   width: 100%;
-  padding: 8px;
+  padding: 6px;
   border-radius: 6px;
   border: 1px solid #aaa;
+  font-size: 14px;
 }
 
 .acciones {
@@ -296,23 +313,47 @@ onMounted(async () => {
   margin-top: 4px;
 }
 
-@media (max-width: 600px) {
+.acciones button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* 📱 Mobile */
+@media (max-width: 640px) {
+  .chat-container-padre {
+  display: flex;
+  width: 100%;
+}
+
   .chat-container {
-    max-width: 90%;
-    margin: auto;
-    height: 60vh;
+    width: 97%;
+    max-width: 100%;
+    margin: auto!important;
+    margin-left: 1.4%!important;
+    height: 80vh;
+    border-radius: 0;
+    bottom: 60px; /* deja visible el menú inferior */
+    border: none;
   }
 
   .chat-header {
-    padding: 0.8rem;
+    padding: 0.6rem;
+    font-size: 14px;
   }
 
   .chat-mensajes {
-    padding: 0.8rem;
+    padding: 0.6rem;
+  }
+
+  .mensaje {
+    max-width: 85%;
+    font-size: 13px;
   }
 
   .chat-input textarea {
-    padding: 8px;
+    font-size: 13px;
   }
 }
 </style>

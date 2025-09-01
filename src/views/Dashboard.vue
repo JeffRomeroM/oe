@@ -1,69 +1,73 @@
 <template>
-  <Header />
-  <Usuarios />
-  <div class="opciones-container">
-    
-    <img src="/public/agro.png" alt="">
-    
-    <Chats class="chats"/>
-  </div>
   
+  <div class="opciones-container">
+    <Header />
+    <Resumen/>
+    <MenuAbajo />
+  </div>
   
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import Resumen from '../components/Resumen.vue'
+
 import Header from '../components/Header.vue'
-import Chats from '../components/Chats.vue'
-import Usuarios from '../components/Usuarios.vue'
-const router = useRouter()
 
+import MenuAbajo from '../components/MenuAbajo.vue'
 
+const vista = ref('resumen')
 </script>
 
 <style scoped>
-.opciones-container {
+.submenu {
   display: flex;
+  justify-content: space-around;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 10px;
   flex-wrap: wrap;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 100%;
 }
-.opciones-container img{
-  width: 50%;
+
+.submenu button {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+.regresar{
+    text-decoration: none;
+    color: #4caf50;
+    font-weight: 900;
+    margin-left: 20px;
+}
+.submenu button.activo {
+  border-bottom: 2px solid #4caf50;
+  color: #4caf50;
+}
+
+.submenu button:hover {
+  color: #4caf50;
+}
+
+.contenido {
+  padding: 20px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
   
-}
-h2 {
-  margin-bottom: 2rem;
-  color: #333;
-  font-size: 1.5rem;
-}
 
-.chats{
-  position: fixed;
-  bottom: 0;
-  margin: auto;
-  width: 100vw;
-  z-index: 100;
-  height: 50vh;
-  margin-top: 50vh;
-}
-
-
-
-@media (min-width: 640px) {
-  .opciones-container img{
-    width: 18%;
-  }
-  .chats{
-    position: fixed;
-    bottom: 0;
-    margin: auto;
-    width: 90vw;
-    z-index: 100;
-    height: 50vh;
-    margin-top: 50vh;
+  .submenu button {
+    text-align: center;
+    padding: 12px;
+    font-size: 18px;
   }
 }
 </style>

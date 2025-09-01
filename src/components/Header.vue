@@ -1,10 +1,7 @@
 <template>
   <header class="header">
     <h1 class="app-name" @click="irARuta('dashboard')">Agro</h1>
-    <div class="botones">
-      <button @click="irARuta('agricultura')">Agricultura</button>
-      <button @click="irARuta('ganaderia')">Ganadería</button>
-    </div>
+    
     <div class="user-info" v-if="fullName" @click="mostrarModal = true">
       <div class="icono">
         {{ obtenerIniciales(fullName) }}
@@ -15,7 +12,7 @@
     <!-- Modal -->
     <div class="modal-overlay" v-if="mostrarModal">
       <div class="modal">
-        <h3>¿Deseas cerrar sesión?</h3>
+        <h3 class="modal-title">¿Deseas cerrar sesión?</h3>
         <div class="modal-buttons">
           <button class="confirm" @click="logout">Sí</button>
           <button class="cancel" @click="mostrarModal = false">No</button>
@@ -66,94 +63,88 @@ const logout = async () => {
 </script>
 
 <style scoped>
+/* Header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 7px;
-  flex-wrap: wrap;
+  padding: 0.7rem 1rem;
   position: sticky;
   top: 0;
-  background-color: white;
-  z-index: 100; 
-  width: 100%;
-  justify-content: space-between;
+  background-color: #fff;
+  z-index: 100;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .app-name {
-  font-size: 1.8rem;
-  font-weight: bold;
+  font-size: 1.6rem;
+  font-weight: 700;
   margin: 0;
   color: #4caf50;
-}
-
-
-
-button {
-  border: none;
-  margin-left: 10px;
-  border-radius: 8px;
   cursor: pointer;
-  background-color: white;
-  color: #4caf50;
-  font-size:  14px;
+  user-select: none;
 }
 
+/* User info */
 .user-info {
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
   align-items: center;
-  cursor: pointer;
   gap: 0.6rem;
+  cursor: pointer;
   padding: 0.4rem 0.8rem;
   border-radius: 999px;
   transition: background 0.2s ease-in-out;
-  margin-right: 5px;
 }
 .user-info:hover {
   background-color: #f0fdf4;
 }
 
 .icono {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background-color:  #4caf50;
+  background-color: #4caf50;
   font-weight: bold;
-  color: #ffffff;
-  text-align: center;
-  line-height: 34px;
-  font-size: 16px;
-  
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
 }
 
 .user-name {
-  font-size: .8rem;
-  font-weight: 800;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: #4caf50;
-  cursor: pointer;
+  white-space: nowrap;
 }
 
 /* Modal */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50%;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 2000;
 }
 
 .modal {
-  background: white;
-  padding: 1.5rem;
+  background: #fff;
   border-radius: 12px;
-  max-width: 300px;
+  width: 90%;
+  max-width: 340px;
   text-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
 .modal-buttons {
@@ -161,24 +152,53 @@ button {
   justify-content: space-between;
   margin-top: 1rem;
   gap: 1rem;
+  padding: 0 1rem 1rem 1rem;
 }
 
 .modal button {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0.6rem;
   border: none;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  padding: 20px;
 }
 
 .confirm {
-  background-color: red;
+  background-color: #e53935;
   color: white;
 }
 
 .cancel {
   background-color: #e5e7eb;
   color: #333;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+ 
+  .icono {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+  .user-info {
+    flex-direction: column;
+    padding: 0.3rem 0.6rem;
+    gap: 0.4rem;
+    margin-right: 5px !important;
+    margin-top: 5px !important;
+  }
+  .user-name {
+    font-size: 0.75rem;
+  }
+  
+  .app-name {
+    font-size: 1.3rem;
+    margin-left: 5px !important;
+  }
 }
 </style>

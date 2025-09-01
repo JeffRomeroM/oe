@@ -287,10 +287,10 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
+<style scoped >
 .crud-container {
   max-width: 96%;
-  margin: 30px auto;
+  margin: 30px auto !important;
   font-family: Arial, sans-serif;
   padding: 15px;
   border: 1px solid #ddd;
@@ -309,7 +309,7 @@ onMounted(async () => {
 
 .filtros-lateral label {
   background-color: #defcdf;
-  padding: 5px 0px;
+  padding: 5px 5px !important;
   border-radius: 10px;
 }
 .filtros-lateral input[type="checkbox"]{
@@ -318,7 +318,7 @@ onMounted(async () => {
 .filtros-lateral input[type="checkbox"]:checked + span {
   background: #4caf50;
   color: white;
-  padding: 4px 8px;
+  padding: 4px 8px !important;
   border-radius: 10px;
   width: 100%;
   text-align: left;
@@ -343,7 +343,7 @@ onMounted(async () => {
   background-color: #4caf50;
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 8px 2px !important;
   cursor: pointer;
   border-radius: 4px;
   font-weight: bold;
@@ -363,6 +363,12 @@ onMounted(async () => {
 
 .btn-exportar{
   background-color: #2196f3;
+  font-size: medium;
+  padding: 8px 2px !important;
+  margin-top: 5px !important;
+}
+.btn-exportar:hover{
+  background-color: #74c0ff;
   font-size: medium;
 }
 @media (max-width: 480px) {
@@ -411,6 +417,7 @@ onMounted(async () => {
   list-style: none;
   padding: 0;
   overflow-y: auto;
+  margin-top: 10px !important;
   margin-bottom: 15px;
 }
 
@@ -419,9 +426,10 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   background: white;
-  
-  margin-bottom: 8px;
-  padding: 10px;
+  width: 96%;
+  margin: auto !important;
+  margin-bottom: 8px!important;
+  padding: 10px !important;
   border-radius: 5px;
   border: 1px solid #ddd;
   flex-wrap: wrap;
@@ -435,7 +443,7 @@ onMounted(async () => {
 .btn-editar,
 .btn-eliminar {
   margin-left: 5px;
-  padding: 6px 10px;
+  padding: 6px 10px !important;
   border: none;
   border-radius: 4px;
   cursor: pointer;

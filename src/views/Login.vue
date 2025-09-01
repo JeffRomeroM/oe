@@ -65,19 +65,19 @@ const goToRegister = () => {
 }
 </script>
 
-<style scoped>
+<style scoped >
 .login-container {
-  max-width: 400px;
-  margin: 6rem 10px;
-  padding: 1rem 1.5rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
+  max-width: 400px !important;
+  margin: 6rem 10px!important;
+  padding: 1rem 1.5rem!important;
+  border: 1px solid #ddd !important;
+  border-radius: 8px!important;
+  background: #fff!important;
 }
 .login-container img {
-  display: block;
-  margin: 0 auto 1rem;
-  width: 100px; /* Ajusta el tamaño según sea necesario */
+  display: block!important;
+  margin: 0 auto 1rem!important;
+  width: 100px!important; /* Ajusta el tamaño según sea necesario */
 }
 h2 {
   text-align: center;
@@ -91,32 +91,32 @@ h2 {
 }
 
 .form input {
-  width: 100%;
-  padding: 0.5rem 0.7rem;
-  margin-top: 0.3rem;
-  margin-bottom: 1rem;
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  font-size: 1rem;
-  box-sizing: border-box;
+  width: 100%!important;
+  padding: 0.5rem 0.7rem!important;
+  margin-top: 0.3rem!important;
+  margin-bottom: 1rem!important;
+  border: 1px solid #aaa!important;
+  border-radius: 4px!important;
+  font-size: 1rem!important;
+  box-sizing: border-box!important;
 }
 
 button {
-  width: 100%;
-  padding: 0.6rem 0;
-  font-size: 1.1rem;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: background-color 0.2s ease;
+  width: 100%!important;
+  padding: 0.6rem 0!important;
+  font-size: 1.1rem!important;
+  background-color: #4caf50!important;
+  color: white!important;
+  border: none!important;
+  border-radius: 6px!important;
+  cursor: pointer!important;
+  font-weight: 700!important;
+  transition: background-color 0.2s ease!important;
 }
 
 button:disabled {
-  background-color: #73e077;
-  cursor: not-allowed;
+  background-color: #73e077!important;
+  cursor: not-allowed!important;
 }
 
 
@@ -129,10 +129,10 @@ button:disabled {
 
 /* Nuevo estilo para el botón de registro */
 .register-redirect {
-  margin-top: 1.5rem;
+  margin-top: 1.5rem!important;
   text-align: center;
   font-size: 0.9rem;
-  color: #444;
+  color: #444!important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -140,9 +140,9 @@ button:disabled {
 }
 
 .register-button {
-  background: none;
+  background: none!important;
   border: none;
-  color: #2563eb;
+  color: #2563eb!important;
   font-weight: 700;
   cursor: pointer;
   padding: 0;
