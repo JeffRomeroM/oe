@@ -135,10 +135,10 @@ import '@material/web/checkbox/checkbox.js';
   .menu-container {
     top: auto;
     bottom: 0;
-    width: 100%;
+    width: 100% !important;
     height: 60px;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  background: #ffffff !important;
+
   }
   .menu {
     flex-direction: row;
@@ -152,7 +152,6 @@ import '@material/web/checkbox/checkbox.js';
     left: 0;
     right: 0;
     padding: 0 1rem;
-    background: transparent !important;
   
   }
 
@@ -163,6 +162,9 @@ import '@material/web/checkbox/checkbox.js';
     align-items: center;
     font-size: 16px;
     color: #555;
+  width: 10% !important;
+  margin: auto !important;
+  background-color: #ffffff !important;
     position: relative;
   }
 
