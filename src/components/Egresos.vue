@@ -38,13 +38,18 @@
     <div v-if="modalVisible" class="modal-overlay" @click.self="cerrarModal">
       <div class="modal">
         <form @submit.prevent="guardarEgreso" class="formulario">
+          <label for="cultivo">Seleccione un cultivo</label>
           <select v-model="form.cultivo" required>
-            <option value="" disabled>Seleccione un cultivo</option>
+            <option value="" disabled>Cultivo</option>
             <option v-for="c in cultivos" :key="c" :value="c">{{ c }}</option>
           </select>
-
-          <input v-model.number="form.monto" placeholder="Monto" type="number" min="0" required />
+          
+          <label for="monto">Ingrese el monto</label>
+          <input v-model.number="form.monto" placeholder="Monto" type="number" value=" " required />
+          
+          <label for="concepto">Ingrese el concepto</label>
           <input v-model="form.concepto" placeholder="Concepto" required />
+          <label for="fecha"> Ingrese la fecha</label>
           <input v-model="form.fecha" type="date" required />
 
           <div class="botones-modal">
@@ -485,11 +490,12 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  
 }
 
 .modal {
   background: white;
-  padding: 20px;
+  padding: 20px!important;
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
@@ -509,7 +515,7 @@ onMounted(async () => {
 
 .formulario select,
 .formulario input {
-  padding: 8px;
+  padding: 10px !important;
   font-size: 16px;
   border: 1px solid #bbb;
   border-radius: 4px;
@@ -520,9 +526,10 @@ onMounted(async () => {
   background-color: #4caf50;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 10px !important;
   cursor: pointer;
   border-radius: 4px;
+  font-size: 15px;
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
@@ -546,10 +553,11 @@ onMounted(async () => {
   background-color: #777;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 10px !important;
   cursor: pointer;
   border-radius: 4px;
   font-weight: bold;
+  margin-left: 10px !important;
   transition: background-color 0.3s ease;
 }
 

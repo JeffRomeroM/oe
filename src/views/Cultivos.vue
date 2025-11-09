@@ -158,7 +158,7 @@ h2 {
 .btn-primary,
 .btn-secundario,
 .btn-peligro {
-  padding: 8px 14px;
+  padding: 4px 14px !important;
   border: none;
   border-radius: 0.5rem;
   margin: 0.2rem;

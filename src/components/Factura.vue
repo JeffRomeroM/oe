@@ -493,7 +493,7 @@ onMounted(async () => {
   background-color: #4caf50;
   border: none;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem !important;
   cursor: pointer;
   border-radius: 6px;
   font-weight: bold;
@@ -582,7 +582,7 @@ onMounted(async () => {
   background-color: #4caf50;
   border: none;
   color: white;
-  padding: 0.4rem 0.8rem;
+  padding: 0.2rem 0.8rem !important;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;

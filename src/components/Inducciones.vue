@@ -6,9 +6,12 @@
 
     <ul class="lista">
       <li v-for="n in inducciones" :key="n.id">
-        <span><strong>Cantidad:</strong> {{ n.cantidad }}</span>
-        <span><strong>Fecha:</strong> {{ n.fecha }}</span>
+        <span class="fecha"> {{ n.fecha }}</span>
+        <span><strong>Cantidad:</strong> {{ n.cantidad }} plantas</span>
         <span><strong>Parcela:</strong> {{ n.parcela }}</span>
+        <span class="contador">
+          Faltan <strong>{{ calcularTiempoRestante(n.fecha) }}</strong> meses para cosechar
+        </span>
         <div>
           <button class="btn" @click="editar(n)">Editar</button>
           <button class="btn btn-rojo" @click="confirmarEliminar(n.id)">Eliminar</button>
@@ -21,9 +24,9 @@
       <div class="modal">
         <h3>{{ editando ? 'Editar inducción' : 'Nueva inducción' }}</h3>
         <form @submit.prevent="guardar">
-          <input type="number" v-model="nueva.cantidad" placeholder="Cantidad" required />
+          <input type="number" v-model="nueva.cantidad" placeholder="Ingrese la cantidad de plantas" required />
           <input type="date" v-model="nueva.fecha" required />
-          <input type="text" v-model="nueva.parcela" placeholder="Parcela" required />
+          <input type="text" v-model="nueva.parcela" placeholder="Lote/plantío" required />
           <div class="acciones">
             <button type="submit" class="btn-confirmar">{{ editando ? 'Actualizar' : 'Guardar' }}</button>
             <button type="button" class="btn-cancelar" @click="cerrarModal">Cancelar</button>
@@ -120,6 +123,24 @@ const cerrarModalEliminar = () => {
   eliminarId = null
 }
 
+// 🔹 Función para calcular meses y días exactos restantes
+const calcularTiempoRestante = (fechaInduccion) => {
+  const inicio = new Date(fechaInduccion)
+  const objetivo = new Date(inicio)
+  objetivo.setMonth(inicio.getMonth() + 5)
+
+  const ahora = new Date()
+  let diff = objetivo - ahora
+
+  if (diff <= 0) return '¡Cumplió los 5 meses! 🎉'
+
+  const diasTotales = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const meses = Math.floor(diasTotales / 30)
+  const dias = diasTotales % 30
+
+  return `${meses} meses y ${dias} días`
+}
+
 onMounted(async () => {
   await obtenerUsuario()
   await cargarInducciones()
@@ -132,6 +153,7 @@ onMounted(async () => {
   margin: auto;
   padding: 1rem;
   font-family: Arial, sans-serif;
+  scroll-behavior: auto;
 }
 .inducciones-container h2 {
   text-align: center;
@@ -140,11 +162,12 @@ onMounted(async () => {
 .btn-agregar {
   background-color: #4caf50;
   color: white;
-  padding: 0.6rem 1.2rem;
+  padding: 0.3rem 0.6rem !important;
   border-radius: 6px;
   border: none;
   cursor: pointer;
   display: block;
+  font-size: 1rem;
   margin: 10px auto 1rem auto;
   width: 80%;
 }
@@ -152,21 +175,37 @@ onMounted(async () => {
 .lista {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 4px !important;
+  width: 100%;
 }
 
 .lista li {
   background: white;
-  padding: 1rem;
-  margin-bottom: 0.8rem;
+  padding: 1rem !important;
+  margin-bottom: 9px !important;
+  margin-right: 1% !important;
   border-radius: 8px;
   display: flex;
+  width: 38%;
   flex-direction: column;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .lista li span {
   font-size: 1rem;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.3rem !important;
+}
+.lista li .fecha {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.lista li .contador {
+  margin-top: 0.2rem !important;
+  font-size: 0.95rem;
+  color: #555;
 }
 
 .lista li div {
@@ -178,7 +217,7 @@ onMounted(async () => {
 
 .btn {
   padding: 0.4rem 0.9rem;
-  font-size: 0.95rem;
+  font-size: 0.95rem !important;
   background-color: #3b82f6;
   color: white;
   border: none;
@@ -210,7 +249,7 @@ onMounted(async () => {
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
-  padding: 1.5rem;
+  padding: 1rem !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
@@ -221,8 +260,8 @@ onMounted(async () => {
 
 .modal input {
   width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.6rem;
+  margin-bottom: 1rem !important;
+  padding: 0.6rem !important;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -238,8 +277,8 @@ onMounted(async () => {
 .btn-confirmar,
 .btn-cancelar {
   flex: 1 1 auto;
-  font-size: 1rem;
-  padding: 0.5rem;
+  font-size: 1rem !important;
+  padding: 0.5rem !important;
   border-radius: 6px;
   border: none;
   color: white;
@@ -251,7 +290,7 @@ onMounted(async () => {
 }
 
 .btn-cancelar {
-  background-color: #ef4444;
+  background-color: #ef4444!important;
 }
 
 @media (max-width: 768px) {

@@ -4,13 +4,13 @@
     
     <nav class="submenu">
      
-      <button :class="{ activo: vista === 'ingresos' }" @click="vista = 'ingresos'">Ingresos</button>
       <button :class="{ activo: vista === 'egresos' }" @click="vista = 'egresos'">Egresos</button>
+      <button :class="{ activo: vista === 'ingresos' }" @click="vista = 'ingresos'">Ingresos</button>
     </nav>
     
     <div class="contenido">
-      <Ingresos v-if="vista === 'ingresos'" />
-      <Egresos v-else-if="vista === 'egresos'" />
+      <Egresos v-if="vista === 'egresos'" />
+      <Ingresos v-else-if="vista === 'ingresos'" />
     </div>
     <MenuAbajo />
   </div>
@@ -25,7 +25,7 @@ import Header from '../components/Header.vue'
 
 import MenuAbajo from '../components/MenuAbajo.vue'
 
-const vista = ref('ingresos')
+const vista = ref('egresos')
 </script>
 
 <style scoped>
