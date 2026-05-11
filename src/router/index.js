@@ -8,6 +8,8 @@ import Ganaderia from '../views/Ganaderia.vue'
 import Chats from '../views/Chats.vue'
 import Usuarios from '../views/Usuarios.vue'
 import Cultivos from '../views/Cultivos.vue'
+import Inducciones from '../views/Inducciones.vue'
+import Factura from '../views/Factura.vue'
 
 const routes = [
   { path: '/', component: Login },
@@ -40,6 +42,16 @@ const routes = [
   {
     path: '/cultivos',
     component: Cultivos,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/facturas',
+    component: Factura,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/inducciones',
+    component: Inducciones,
     meta: { requiresAuth: true }
   }
 ]

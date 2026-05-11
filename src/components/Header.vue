@@ -179,7 +179,9 @@ const logout = async () => {
 
 /* Responsive */
 @media (max-width: 640px) {
- 
+  .header{
+    height:40px;
+  }
   .icono {
     width: 30px;
     height: 30px;
@@ -189,8 +191,6 @@ const logout = async () => {
     flex-direction: column;
     padding: 0.3rem 0.6rem;
     gap: 0.4rem;
-    margin-right: 5px !important;
-    margin-top: 5px !important;
   }
   .user-name {
     font-size: 0.75rem;

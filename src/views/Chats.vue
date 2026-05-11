@@ -1,65 +1,147 @@
 <template>
-  <Header/>
-<div class="chat-container-padre">
   
-    <div class="chat-container">
+
+  <div class="chat-page">
     
-    <div class="chat-header">
-      <h2>Mensajes</h2>
-    </div>
+    <!-- HEADER -->
+    
 
-    <div class="chat-mensajes" ref="chatScroll">
-      <div
-        v-for="msg in mensajes"
-        :key="msg.id"
-        :class="['mensaje', msg.user_id === userId ? 'mio' : 'otro']"
-      >
-        <div class="avatar">
-          {{ msg.full_name?.charAt(0).toUpperCase() || '?' }}
-        </div>
-        <div class="mensaje-info">
-          <small>
-            {{ msg.user_id === userId ? 'Tú' : msg.full_name }}
-            {{ new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) }}
-          </small>
+    <!-- CHAT -->
+    <div class="chat-container">
+
+      <!-- MENSAJES -->
+      <div class="chat-mensajes" ref="chatScroll">
+
+        <div
+          v-for="msg in mensajes"
+          :key="msg.id"
+          :class="['mensaje-wrapper', msg.user_id === userId ? 'mio-wrapper' : 'otro-wrapper']"
+        >
+
+          <!-- AVATAR -->
+          <div
+            v-if="msg.user_id !== userId"
+            class="avatar"
+          >
+            {{ msg.full_name?.charAt(0).toUpperCase() || '?' }}
+          </div>
+
+          <!-- BURBUJA -->
+          <div
+            :class="['mensaje', msg.user_id === userId ? 'mio' : 'otro']"
+          >
+
+            <!-- INFO -->
+            <div class="mensaje-top">
+              <small>
+                {{
+                  msg.user_id === userId
+                    ? 'Tú'
+                    : msg.full_name
+                }}
+              </small>
+
+              <span>
+                {{
+                  new Date(msg.created_at).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                  })
+                }}
+              </span>
+            </div>
+
+            <!-- EDITAR -->
+            <div v-if="editandoId === msg.id">
+
+              <textarea
+                v-model="mensajeEditado"
+                class="input-editar"
+              ></textarea>
+
+              <div class="acciones">
+                <button
+                  class="btn-guardar"
+                  @click="guardarEdicion(msg.id)"
+                >
+                  <Icon icon="mdi:content-save-outline" />
+                </button>
+
+                <button
+                  class="btn-cancelar"
+                  @click="cancelarEdicion"
+                >
+                  <Icon icon="mdi:close" />
+                </button>
+              </div>
+
+            </div>
+
+            <!-- MENSAJE -->
+            <div v-else>
+
+              <div class="contenido">
+                {{ msg.contenido }}
+              </div>
+
+              <!-- ACCIONES -->
+              <div
+                v-if="msg.user_id === userId"
+                class="acciones"
+              >
+                
+                <Icon icon="mdi:pencil-outline" @click="editar(msg)" class="editar"/>
+               
+
+                <Icon icon="mdi:trash-can"  @click="eliminar(msg.id)" class="eliminarMsg"/>
+               
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div v-if="editandoId === msg.id">
-          <input v-model="mensajeEditado" class="input-editar" />
-          <div class="acciones">
-            <button @click="guardarEdicion(msg.id)">Guardar</button>
-            <button @click="cancelarEdicion">Cancelar</button>
-          </div>
-        </div>
-        <div v-else>
-          <div class="contenido">{{ msg.contenido }}</div>
-          <div v-if="msg.user_id === userId" class="acciones">
-            <button @click="editar(msg)">✏️</button>
-            <button @click="eliminar(msg.id)">🗑️</button>
-          </div>
-        </div>
       </div>
+
+      <!-- INPUT -->
+      <form
+        @submit.prevent="guardar"
+        class="chat-input"
+      >
+
+        <div class="input-box">
+
+          <textarea
+            v-model="mensaje"
+            placeholder="Escribe un mensaje..."
+            rows="1"
+            @input="autoExpand"
+            ref="textarea"
+            required
+          ></textarea>
+
+          <button type="submit">
+            <Icon icon="mdi:send" />
+          </button>
+
+        </div>
+
+      </form>
+
     </div>
 
-    <form @submit.prevent="guardar" class="chat-input">
-      <textarea
-        v-model="mensaje"
-        placeholder="Escribe un mensaje..."
-        rows="1"
-        @input="autoExpand"
-        ref="textarea"
-        required
-      ></textarea>
-      <button type="submit">Enviar</button>
-    </form>
-    <MenuAbajo /> 
+
   </div>
-</div>
 </template>
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
+import { Icon } from '@iconify/vue'
 import { supabase } from '../supabase'
+
 import MenuAbajo from '../components/MenuAbajo.vue'
 import Header from '../components/Header.vue'
 
@@ -68,8 +150,8 @@ const mensaje = ref('')
 const mensajeEditado = ref('')
 const editandoId = ref(null)
 const userId = ref(null)
-const chatScroll = ref(null)
 
+const chatScroll = ref(null)
 const textarea = ref(null)
 
 const obtenerUsuario = async () => {
@@ -84,17 +166,22 @@ const cargarMensajes = async () => {
     .order('created_at', { ascending: true })
 
   mensajes.value = data || []
+
   scrollAlFinal()
 }
 
 const scrollAlFinal = () => {
   nextTick(() => {
-    chatScroll.value.scrollTop = chatScroll.value.scrollHeight
+    if (chatScroll.value) {
+      chatScroll.value.scrollTop =
+        chatScroll.value.scrollHeight
+    }
   })
 }
 
 const autoExpand = () => {
   const el = textarea.value
+
   if (el) {
     el.style.height = 'auto'
     el.style.height = el.scrollHeight + 'px'
@@ -110,13 +197,18 @@ const guardar = async () => {
     .eq('id', userId.value)
     .single()
 
-  await supabase.from('mensajes').insert([{
-    contenido: mensaje.value,
-    user_id: userId.value,
-    full_name: perfil.full_name
-  }])
+  await supabase.from('mensajes').insert([
+    {
+      contenido: mensaje.value,
+      user_id: userId.value,
+      full_name: perfil?.full_name || 'Usuario'
+    }
+  ])
 
   mensaje.value = ''
+
+  autoExpand()
+
   await cargarMensajes()
 }
 
@@ -126,13 +218,17 @@ const editar = (msg) => {
 }
 
 const guardarEdicion = async (id) => {
-  await supabase.from('mensajes')
-    .update({ contenido: mensajeEditado.value })
+  await supabase
+    .from('mensajes')
+    .update({
+      contenido: mensajeEditado.value
+    })
     .eq('id', id)
     .eq('user_id', userId.value)
 
   editandoId.value = null
   mensajeEditado.value = ''
+
   await cargarMensajes()
 }
 
@@ -142,7 +238,12 @@ const cancelarEdicion = () => {
 }
 
 const eliminar = async (id) => {
-  await supabase.from('mensajes').delete().eq('id', id).eq('user_id', userId.value)
+  await supabase
+    .from('mensajes')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', userId.value)
+
   await cargarMensajes()
 }
 
@@ -152,208 +253,382 @@ onMounted(async () => {
 
   supabase
     .channel('chat')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'mensajes' }, cargarMensajes)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'mensajes'
+      },
+      cargarMensajes
+    )
     .subscribe()
 })
 </script>
 
 <style scoped>
-.chat-container-padre {
-  display: flex;
-  width: 100%;
-
+* {
+  box-sizing: border-box;
 }
 
-/* Caja principal */
-.chat-container {
-  width: 75%;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
-  height: 70vh;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #fff;
-  z-index: 100;
-  position: fixed;
-  margin: auto !important;
-  bottom: 70px; /* deja espacio al menú inferior */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Header */
-.chat-header {
-  background: #4caf50;
-  color: white;
-  text-align: center;
+.chat-page {
+  min-height: 100vh;
+  background: #efeae2;
   padding: 0.8rem;
-  position: relative;
-  border-radius: 12px 12px 0 0;
-  font-weight: bold;
+  padding-bottom: 100px;
 }
 
-/* Lista de mensajes */
-.chat-mensajes {
-  flex: 1;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  background: #f6f6f6;
-  scroll-behavior: smooth;
-}
+/* HEADER */
 
-/* Estilo general de burbujas */
-.mensaje {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 0.8rem;
-  max-width: 70%;
-  word-wrap: break-word;
-  padding: 0.6rem 0.8rem;
-  border-radius: 12px;
-  position: relative;
-  line-height: 1.4;
-}
-
-/* Mensaje propio */
-.mensaje.mio {
-  background: #83c460;
-  align-self: flex-end;
-  margin-top: 10px;
-  text-align: right;
-  flex-direction: row-reverse;
-  border-bottom-right-radius: 4px;
-}
-
-/* Mensaje de otro */
-.mensaje.otro {
-  background: #ffffff;
-  margin-top: 10px;
-  padding-top:50px;
-  align-self: flex-start;
-  border-bottom-left-radius: 4px;
-}
-
-/* Avatar */
-.avatar {
-  background: #4caf50;
+.top-chat {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
   color: white;
-  font-weight: bold;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-chat {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-  margin-top: 2px;
 }
 
-/* Info del mensaje */
-.mensaje-info {
-  font-size: 11px;
-  color: #666;
-  margin-bottom: 2px;
+.icon-chat svg {
+  font-size: 1.6rem;
 }
+
+.top-chat h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.top-chat p {
+  margin: 3px 0 0;
+  opacity: 0.9;
+  font-size: 13px;
+}
+
+.online-status {
+  background: rgba(255,255,255,0.15);
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.online-status span {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+}
+
+/* CHAT */
+
+.chat-container {
+  background: #efeae2;
+  border-radius: 18px;
+  height: calc(100vh - 180px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* MENSAJES */
+
+.chat-mensajes {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.7rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* WRAPPER */
+
+.mensaje-wrapper {
+  display: flex;
+  margin-bottom: 0.35rem;
+  align-items: flex-end;
+}
+
+.mio-wrapper {
+  justify-content: flex-end;
+}
+
+.otro-wrapper {
+  justify-content: flex-start;
+}
+
+/* AVATAR */
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  font-weight: bold;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* MENSAJES */
+
+.mensaje {
+  max-width: 78%;
+  padding: 0.38rem 0.55rem;
+  border-radius: 10px;
+  position: relative;
+  word-break: break-word;
+  animation: fade .15s ease;
+}
+
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mensaje.mio {
+  background: #d9fdd3;
+  color: #111827;
+  border-bottom-right-radius: 3px;
+}
+
+.mensaje.otro {
+  background: white;
+  color: #111827;
+  border-bottom-left-radius: 3px;
+}
+
+/* INFO */
+
+.mensaje-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+
+.mensaje-top small {
+  font-weight: 600;
+  color: #15803d;
+}
+
+.mensaje-top span {
+  color: #6b7280;
+  font-size: 10px;
+}
+
+/* TEXTO */
 
 .contenido {
   white-space: pre-wrap;
   word-break: break-word;
+  line-height: 1.35;
   font-size: 14px;
 }
 
-/* Input */
+/* INPUT */
+
 .chat-input {
-  display: flex;
-  align-items: center;
-  padding: 8px;
+  background: #f0f2f5;
+  padding: 0.5rem;
   border-top: 1px solid #ddd;
-  background: #fff;
 }
 
-.chat-input textarea {
+.input-box {
+  background: white;
+  border-radius: 24px;
+  padding: 0.25rem 0.3rem 0.25rem 0.8rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.input-box textarea {
   flex: 1;
   resize: none;
-  overflow: hidden;
-  padding: 8px;
-  border: 1px solid #bbb;
-  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding-top: 0.65rem;
   font-size: 14px;
+  max-height: 120px;
   min-height: 36px;
-  max-height: 150px;
+  line-height: 1.35;
 }
 
-.chat-input button {
-  padding: 0 16px;
-  margin-left: 6px;
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
+.input-box textarea::placeholder {
+  color: #9ca3af;
 }
+
+.input-box button {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: #22c55e;
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: 0.2s;
+}
+
+.input-box button:hover {
+  background: #16a34a;
+}
+
+.input-box button svg {
+  font-size: 1rem;
+}
+
+/* EDITAR */
 
 .input-editar {
   width: 100%;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #aaa;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  padding: 0.55rem;
+  resize: none;
+  min-height: 65px;
   font-size: 14px;
 }
+
+/* ACCIONES */
 
 .acciones {
   display: flex;
   justify-content: flex-end;
-  gap: 0.4rem;
+  gap: 4px;
   margin-top: 4px;
 }
 
-.acciones button {
-  background: none;
+.btn-icon,
+.btn-guardar,
+.btn-cancelar {
   border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
   cursor: pointer;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 📱 Mobile */
-@media (max-width: 640px) {
-  .chat-container-padre {
-  display: flex;
-  width: 100%;
+.editar,
+.btn-guardar {
+  color: #15803d;
 }
+
+.eliminarMsg {
+  color: rgb(236, 10, 10);
+}
+
+
+
+.btn-cancelar {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* SCROLL */
+
+.chat-mensajes::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-mensajes::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 10px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+  .chat-page {
+    padding: 0.5rem;
+    padding-bottom: 90px;
+  }
 
   .chat-container {
-    width: 97%;
-    max-width: 100%;
-    margin: auto!important;
-    margin-left: 1.4%!important;
-    height: 80vh;
-    border-radius: 0;
-    bottom: 60px; /* deja visible el menú inferior */
-    border: none;
-  }
-
-  .chat-header {
-    padding: 0.6rem;
-    font-size: 14px;
-  }
-
-  .chat-mensajes {
-    padding: 0.6rem;
+    height: calc(100vh - 165px);
   }
 
   .mensaje {
-    max-width: 85%;
-    font-size: 13px;
+    max-width: 88%;
   }
 
-  .chat-input textarea {
-    font-size: 13px;
+  .top-chat {
+    border-radius: 14px;
+    padding: 0.8rem;
   }
+
+  .icon-chat {
+    width: 42px;
+    height: 42px;
+  }
+
+  .icon-chat svg {
+    font-size: 1.3rem;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .top-chat {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .online-status {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mensaje {
+    max-width: 94%;
+  }
+
+  .chat-mensajes {
+    padding: 0.5rem;
+  }
+
 }
 </style>
