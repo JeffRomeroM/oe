@@ -10,6 +10,8 @@ import Usuarios from '../views/Usuarios.vue'
 import Cultivos from '../views/Cultivos.vue'
 import Inducciones from '../views/Inducciones.vue'
 import Factura from '../views/Factura.vue'
+import Inventario from '../views/Inventario.vue'
+import Fertilizaciones from '../views/Fertilizaciones.vue'
 
 const routes = [
   { path: '/', component: Login },
@@ -52,6 +54,16 @@ const routes = [
   {
     path: '/inducciones',
     component: Inducciones,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/inventario',
+    component: Inventario,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/fertilizaciones',
+    component: Fertilizaciones,
     meta: { requiresAuth: true }
   }
 ]

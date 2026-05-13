@@ -130,6 +130,30 @@
 
                 <span>Facturas</span>
               </RouterLink>
+              <RouterLink
+                to="/inventario"
+                class="pop-item"
+                @click="cerrarMenu"
+              >
+                <Icon
+                  icon="mdi:warehouse"
+                  class="pop-icon"
+                />
+
+                <span>Inventario</span>
+              </RouterLink>
+              <RouterLink
+                to="/fertilizaciones"
+                class="pop-item"
+                @click="cerrarMenu"
+              >
+                <Icon
+                  icon="mdi:leaf"
+                  class="pop-icon"
+                />
+
+                <span>Fertilizaciones</span>
+              </RouterLink>
 
             </div>
 
