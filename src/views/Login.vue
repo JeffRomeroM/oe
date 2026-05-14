@@ -1,59 +1,171 @@
 <template>
-  <div class="login-container">
-  <img src="/public/agro.png" alt="">
-    <h2>Iniciar Sesión</h2>
-    <form @submit.prevent="login" class="form">
-      <label>
-        Correo electrónico:
-        <input v-model="email" type="email" placeholder="correo@ejemplo.com" required />
-      </label>
+  <div class="login-wrapper">
 
-      <label>
-        Contraseña:
-        <input v-model="password" type="password" placeholder="********" required />
-      </label>
+    <div class="login-container">
 
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Ingresando...' : 'Iniciar Sesión' }}
-      </button>
-    </form>
+      <!-- LOGO TEXTO -->
 
-    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+      <div class="brand">
+        agro
+      </div>
 
-    <div class="register-redirect">
-      <span>¿No tienes cuenta?</span>
-      <button @click="goToRegister" class="register-button">Regístrate aquí</button>
+      <h2>
+        Iniciar Sesión
+      </h2>
+
+      <p class="subtitle">
+        Accede a tu panel agrícola
+      </p>
+
+      <form
+        @submit.prevent="login"
+        class="form"
+      >
+
+        <!-- EMAIL -->
+
+        <label>
+          Correo electrónico
+
+          <input
+            v-model="email"
+            type="email"
+            placeholder="correo@ejemplo.com"
+            required
+          >
+        </label>
+
+        <!-- PASSWORD -->
+
+        <label>
+          Contraseña
+
+          <div class="password-box">
+
+            <input
+              v-model="password"
+              :type="
+                mostrarPassword
+                ? 'text'
+                : 'password'
+              "
+              placeholder="********"
+              required
+            >
+
+            <button
+              type="button"
+              class="toggle-password"
+              @click="togglePassword"
+            >
+
+              <Icon
+                :icon="
+                  mostrarPassword
+                  ? 'mdi:eye-off-outline'
+                  : 'mdi:eye-outline'
+                "
+              />
+
+            </button>
+
+          </div>
+
+        </label>
+
+        <!-- BOTON -->
+
+        <button
+          type="submit"
+          class="login-btn"
+          :disabled="loading"
+        >
+          {{
+            loading
+            ? 'Ingresando...'
+            : 'Iniciar Sesión'
+          }}
+        </button>
+
+      </form>
+
+      <!-- ERROR -->
+
+      <p
+        v-if="errorMessage"
+        class="error"
+      >
+        {{ errorMessage }}
+      </p>
+
+      <!-- REGISTER -->
+
+      <div class="register-redirect">
+
+        <span>
+          ¿No tienes cuenta?
+        </span>
+
+        <button
+          @click="goToRegister"
+          class="register-button"
+        >
+          Regístrate aquí
+        </button>
+
+      </div>
+
     </div>
+
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { supabase } from '../supabase'
 import { useRouter } from 'vue-router'
+import { supabase } from '../supabase'
+import { Icon } from '@iconify/vue'
 
 const email = ref('')
 const password = ref('')
+
 const loading = ref(false)
 const errorMessage = ref('')
+
+const mostrarPassword = ref(false)
+
 const router = useRouter()
 
+const togglePassword = () => {
+
+  mostrarPassword.value =
+    !mostrarPassword.value
+}
+
 const login = async () => {
+
   errorMessage.value = ''
+
   loading.value = true
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value,
-  })
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email: email.value,
+      password: password.value
+    })
 
   if (error) {
-    errorMessage.value = error.message
+
+    errorMessage.value =
+      error.message
+
     loading.value = false
+
     return
   }
 
   if (data.user) {
+
     router.push('/dashboard')
   }
 
@@ -61,94 +173,229 @@ const login = async () => {
 }
 
 const goToRegister = () => {
+
   router.push('/register')
 }
 </script>
 
-<style scoped >
-.login-container {
-  max-width: 400px !important;
-  margin: 6rem 10px!important;
-  padding: 1rem 1.5rem!important;
-  border: 1px solid #ddd !important;
-  border-radius: 8px!important;
-  background: #fff!important;
-}
-.login-container img {
-  display: block!important;
-  margin: 0 auto 1rem!important;
-  width: 100px!important; /* Ajusta el tamaño según sea necesario */
-}
-h2 {
-  text-align: center;
-  margin-bottom: 1rem;
+<style scoped>
+
+.login-wrapper{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1rem;
+  background:
+  linear-gradient(
+    135deg,
+    #f0fdf4,
+    #ecfeff
+  );
 }
 
-.form label {
-  display: block;
-  margin-bottom: 0.8rem;
-  font-weight: 600;
+.login-container{
+  width:100%;
+  max-width:430px;
+  background:white;
+  padding:2.2rem;
+  border-radius:30px;
+  box-shadow:
+  0 10px 35px rgba(0,0,0,.08);
+  border:1px solid #e5e7eb;
 }
 
-.form input {
-  width: 100%!important;
-  padding: 0.5rem 0.7rem!important;
-  margin-top: 0.3rem!important;
-  margin-bottom: 1rem!important;
-  border: 1px solid #aaa!important;
-  border-radius: 4px!important;
-  font-size: 1rem!important;
-  box-sizing: border-box!important;
+.brand{
+  text-align:center;
+  font-size:3rem;
+  font-weight:900;
+  letter-spacing:1px;
+  color:#16a34a;
+  margin-bottom:.4rem;
+  font-family:
+  'Trebuchet MS',
+  sans-serif;
 }
 
-button {
-  width: 100%!important;
-  padding: 0.6rem 0!important;
-  font-size: 1.1rem!important;
-  background-color: #4caf50!important;
-  color: white!important;
-  border: none!important;
-  border-radius: 6px!important;
-  cursor: pointer!important;
-  font-weight: 700!important;
-  transition: background-color 0.2s ease!important;
+h2{
+  text-align:center;
+  color:#111827;
+  font-size:1.8rem;
+  margin-bottom:.3rem;
 }
 
-button:disabled {
-  background-color: #73e077!important;
-  cursor: not-allowed!important;
+.subtitle{
+  text-align:center;
+  color:#6b7280;
+  margin-bottom:2rem;
 }
 
-
-.error {
-  margin-top: 1rem;
-  color: #b91c1c;
-  font-weight: 700;
-  text-align: center;
+.form{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
 }
 
-/* Nuevo estilo para el botón de registro */
-.register-redirect {
-  margin-top: 1.5rem!important;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #444!important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
+.form label{
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+  font-weight:600;
+  color:#374151;
+  font-size:.95rem;
 }
 
-.register-button {
-  background: none!important;
-  border: none;
-  color: #2563eb!important;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0;
-  font-size: 0.9rem;
-  text-decoration: underline;
+.form input{
+  width:100%;
+  padding:1rem;
+  border-radius:16px;
+  border:1px solid #d1d5db;
+  outline:none;
+  transition:.2s;
+  font-size:1rem;
+  background:white;
 }
 
+.form input:focus{
+  border-color:#22c55e;
+  box-shadow:
+  0 0 0 4px rgba(34,197,94,.12);
+}
+
+.password-box{
+  position:relative;
+}
+
+.password-box input{
+  padding-right:55px;
+}
+
+.toggle-password{
+  position:absolute;
+  top:50%;
+  right:14px;
+  transform:translateY(-50%);
+  border:none;
+  background:none;
+  cursor:pointer;
+  color:#6b7280;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.35rem;
+}
+
+.login-btn{
+  width:100%;
+  border:none;
+  background:#22c55e;
+  color:white;
+  padding:1rem;
+  border-radius:16px;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+  margin-top:.5rem;
+}
+
+.login-btn:hover{
+  background:#16a34a;
+}
+
+.login-btn:disabled{
+  opacity:.7;
+  cursor:not-allowed;
+}
+
+.error{
+  margin-top:1rem;
+  text-align:center;
+  color:#dc2626;
+  font-weight:600;
+}
+
+.register-redirect{
+  margin-top:1.5rem;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:.4rem;
+  flex-wrap:wrap;
+  text-align:center;
+  color:#4b5563;
+  font-size:.95rem;
+}
+
+.register-button{
+  border:none;
+  background:none;
+  color:#2563eb;
+  cursor:pointer;
+  font-weight:700;
+  text-decoration:underline;
+}
+
+@media(max-width:768px){
+
+  .login-wrapper{
+    padding:1rem;
+    align-items:flex-start;
+    padding-top:3rem;
+  }
+
+  .login-container{
+    padding:1.5rem;
+    border-radius:24px;
+  }
+
+  .brand{
+    font-size:2.5rem;
+  }
+
+  h2{
+    font-size:1.5rem;
+  }
+
+  .subtitle{
+    font-size:.92rem;
+  }
+
+  .form input{
+    padding:.95rem;
+    font-size:.95rem;
+  }
+
+  .login-btn{
+    padding:.95rem;
+  }
+
+}
+
+@media(max-width:480px){
+
+  .login-container{
+    padding:1.2rem;
+    margin-top:5rem;
+  }
+
+  .brand{
+    font-size:2.2rem;
+  }
+
+  h2{
+    font-size:1.35rem;
+  }
+
+  .form label{
+    font-size:.9rem;
+  }
+
+  .form input{
+    font-size:.92rem;
+    width: 90%;
+  }
+
+}
 
 </style>
